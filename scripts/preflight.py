@@ -34,7 +34,10 @@ def check_contracts() -> None:
     for name in ("parity.py", "invoice_gate.py"):
         path = ROOT / "contracts" / name
         source = path.read_text(encoding="utf-8")
-        if source.splitlines()[0].strip() != SDK_HEADER:
+        # StudioNet requires the runner version comment before the dependency
+        # manifest. Keep the exact pinned dependency, but allow that required
+        # two-line header shape for both contracts.
+        if SDK_HEADER not in {line.strip() for line in source.splitlines()[:3]}:
             fail(f"{name}: pinned stable py-genlayer dependency header differs")
         compile(source, str(path), "exec")
     cfg = (ROOT / "gltest.config.yaml").read_text()

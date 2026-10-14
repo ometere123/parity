@@ -1,5 +1,5 @@
+# v0.2.12
 # { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
-# parity v0.1.0
 """Parity: source-backed most-favoured-terms covenants for Studionet 61999.
 
 This contract establishes verifiable price-cap entitlements; it does not custody,
