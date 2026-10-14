@@ -126,7 +126,7 @@ The current verification run recorded:
 
 The final contracts are deployed on stable StudioNet (`61999`) and their retrieved source bytes match the committed contract files exactly. A live covenant, provider ratification, comparable lower offer, non-triggering/invalid offer records and InvoiceGate authorization/rejection paths are recorded in [`DEPLOYMENT.md`](DEPLOYMENT.md), [`SUBMISSION.md`](SUBMISSION.md) and [`artifacts/studionet_proof.json`](artifacts/studionet_proof.json).
 
-The live offer documents are repository-controlled fixtures for reproducible protocol evidence; they are not independent proof of third-party pricing or complete market discovery. Source-unavailable evaluation was attempted but remained in `COMMITTING` and is recorded as pending rather than presented as finalized evidence.
+The live offer documents are repository-controlled fixtures for reproducible protocol evidence; they are not independent proof of third-party pricing or complete market discovery. The weaker-support fixture finalized as `NONCOMPARABLE` with `support=FAIL` and no price effect. Source-unavailable evaluation was attempted but remains in `COMMITTING` and is recorded as pending rather than presented as finalized evidence.
 
 See [`docs/LIVE_STUDIONET_RUNBOOK.md`](docs/LIVE_STUDIONET_RUNBOOK.md), [`docs/CONSENSUS.md`](docs/CONSENSUS.md) and [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
 

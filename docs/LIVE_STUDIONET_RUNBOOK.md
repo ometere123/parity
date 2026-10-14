@@ -47,7 +47,7 @@ submitter:    0x0d5540e0aD4B92Aa0ad4e5F1b8cD645ee1E363E7
 3. Submit the repository-controlled lower comparable fixture and evaluate it. Read `get_offer(1)` and `quote(1)`; the observed result was `TRIGGERED`, all six facets `PASS`, and `best_total=87400`.
 4. Submit/evaluate the higher-price fixture. The observed result was `NOT_BETTER`; the cap stayed `87400`.
 5. Submit/evaluate the wrong-provider fixture. The observed result was `INVALID_SOURCE` with no cap effect.
-6. Submit the weaker-support fixture and duplicate the comparable URL only as separate negative checks. The duplicate reached a finalized contract error. The weaker-support evaluation was observed as NONCOMPARABLE before its transaction became unavailable from the RPC, so it is not counted as finalized evidence.
+6. Submit the weaker-support fixture and duplicate the comparable URL only as separate negative checks. The weaker-support evaluation finalized as `NONCOMPARABLE` with `support=FAIL` and no cap effect. The duplicate reached a finalized contract error.
 7. Submit the missing-source URL only for bounded retry testing. Its evaluation remained `COMMITTING` and is recorded as pending; do not treat it as a finalized source-unavailable proof.
 8. Deploy InvoiceGate bound to the exact Parity address. Authorize an invoice at `87400` from the beneficiary, then verify finalized contract errors for amount `87401`, replay, wrong caller and invalid covenant hash.
 
@@ -64,7 +64,7 @@ All observed transaction hashes, finality labels, readbacks and limitations are 
 | More expensive offer | FINALIZED / NOT_BETTER | evaluation `0xb4f593c0ea2e53a57319436edeeb12a13214e7de954d7d311d963194aa68f11d` |
 | Wrong provider | FINALIZED / INVALID_SOURCE | evaluation `0x20ec5e65cf2b2cfec93892e0b4e2d979e7cd638ee6b2be7a5eeb07e010315f05` |
 | Duplicate URL | FINALIZED / CONTRACT_ERROR | `0x063cccbf89d499345c51a1d96bf3dac28e83d5f0c80978d9bc8b1947df2f2179` |
-| Weaker support | NOT FINAL EVIDENCE | state read was NONCOMPARABLE/support FAIL; evaluation hash later unavailable |
+| Weaker support | FINALIZED / NONCOMPARABLE | evaluation `0xcb064e8a750e272f37b7f523952960cc6c6cc69afc1e0f3bc36a697058e61e0f`; `support=FAIL`; no cap effect |
 | Missing source/retry exhaustion | PENDING | `0xce94f1...` remained COMMITTING; no final claim |
 | InvoiceGate at-cap authorization | FINALIZED / SUCCESS | `0xd0b92a165dbcbfc11cd1070ddebdeb754679fbc1f157acb80680bc6838c2a1b3`; canonical authorization readback |
 | InvoiceGate negative checks | FINALIZED / CONTRACT_ERROR | above cap, replay, wrong caller and wrong hash; see `DEPLOYMENT.md` |

@@ -35,7 +35,7 @@ The completed local run recorded:
 
 Wallet A proposed covenant `1` using USD minor units, quantity `100`, term `12`, unit `100`, setup `1000`, recurring `200`, and total `123400`. Wallet B ratified it. The comparable public fixture reduced the finalized quote to `87400`; `get_covenant(1)` and `quote(1)` read back `best_offer_id=1`, `best_total=87400`, `active=true`.
 
-The same deployment also has finalized readbacks for a higher-price `NOT_BETTER` offer and an `INVALID_SOURCE` wrong-provider offer. A cheaper weaker-support offer was observed as NONCOMPARABLE in a non-final read, but its evaluation hash later became unavailable from the RPC; it is not claimed as finalized evidence. A missing-source evaluation remains COMMITTING and pending. These limitations are stated explicitly in `DEPLOYMENT.md`.
+The same deployment also has finalized readbacks for a higher-price `NOT_BETTER` offer, a cheaper but weaker-support `NONCOMPARABLE` offer (`support=FAIL`, no economic effect), and an `INVALID_SOURCE` wrong-provider offer. A missing-source evaluation remains COMMITTING and pending; it is not claimed as finalized source-unavailability evidence. These limits are stated explicitly in `DEPLOYMENT.md`.
 
 ## Cross-contract proof
 

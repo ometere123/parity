@@ -111,11 +111,22 @@
       "submit_tx": "0xf652f82391e9d11773b491ae81488fd2a8419e473918ce4f1ed374a71207e23c",
       "evaluate_tx": "0xcb064e8a750e272f37b7f523952960cc6c6cc69afc1e0f3bc36a697058e61e0f",
       "submit_finality": "FINALIZED",
-      "evaluation_finality": "UNAVAILABLE_FROM_RPC",
-      "status_read_observed_before_rpc_loss": "NONCOMPARABLE",
-      "support_read_observed_before_rpc_loss": "FAIL",
-      "source_digest_read": "263ff96389a30e854acc93a97ab13b2d4cc08c96e8a887b7256696930f4d693c",
-      "note": "The evaluation transaction was not counted as finalized evidence because the authoritative RPC later returned transaction-not-found."
+      "evaluation_finality": "FINALIZED",
+      "consensus": "MAJORITY_AGREE",
+      "execution": "SUCCESS",
+      "status": "NONCOMPARABLE",
+      "quoted_total_minor": 75400,
+      "facets": {
+        "scope": "PASS",
+        "tier": "PASS",
+        "support": "FAIL",
+        "territory": "PASS",
+        "exclusions": "PASS",
+        "audience": "PASS"
+      },
+      "reason": "Support is weaker: offer provides business-hours ticket response within two business days versus baseline 24/7 incident response within four hours.",
+      "source_digest": "263ff96389a30e854acc93a97ab13b2d4cc08c96e8a887b7256696930f4d693c",
+      "payload_digest": "78e97c9ec84d6f9cd66cf15cccc9866b58d79540b84de272a6f7cc16cc1126ef"
     },
     {
       "id": 4,
@@ -200,7 +211,6 @@
   "limitations": [
     "Fixture documents are repository-controlled test evidence, not independent provider-market proof.",
     "Provider URL-prefix ratification is not cryptographic domain-ownership proof.",
-    "Source-unavailable evaluation remained COMMITTING and is pending/non-final.",
-    "The weaker-support evaluation state was observed as NONCOMPARABLE before its transaction became unavailable from the RPC and is not counted as finalized evidence."
+    "Source-unavailable evaluation remained COMMITTING and is pending/non-final."
   ]
 }
