@@ -37,7 +37,13 @@ class ParityInvoiceGate(gl.Contract):
         # the typed storage slot; storing the raw string is a finalized
         # deployment-time contract error in GenVM v0.2.12.
         if not isinstance(parity_address, Address):
-            parity_address = Address(parity_address)
+            raw_address = str(parity_address)
+            # CLI address# arguments arrive in the VM without the optional
+            # 0x marker, while Address accepts hex only with that marker.
+            if (len(raw_address) == 40 and
+                all(ch in "0123456789abcdefABCDEF" for ch in raw_address)):
+                raw_address = "0x" + raw_address
+            parity_address = Address(raw_address)
         self.parity_address=parity_address
         self.authorized_count=u256(0)
 
