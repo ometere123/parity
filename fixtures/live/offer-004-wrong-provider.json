@@ -1,0 +1,23 @@
+{
+  "offer_id": "parity-live-wrong-provider-001",
+  "provider_key": "other-provider",
+  "currency": "USD",
+  "scope": "hosted project backups including full restores",
+  "tier": "business",
+  "support": "24/7 incident response within four hours",
+  "territory": "Nigeria",
+  "exclusions": "no additional restrictions beyond stated service maintenance windows",
+  "audience": "all existing customers of business tier",
+  "billing_period": "monthly",
+  "unit_price_minor": 50,
+  "setup_fee_minor": 1000,
+  "recurring_fee_minor": 200,
+  "min_quantity": 1,
+  "max_quantity": 1000,
+  "min_term_months": 1,
+  "max_term_months": 24,
+  "published_at": 1791970318,
+  "valid_from": 1791970318,
+  "valid_until": 1794562166,
+  "public_offer": true
+}
