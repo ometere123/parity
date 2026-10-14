@@ -100,6 +100,13 @@ def test_nonbetter_price_does_not_change_cap(env):
     assert status==env.p.NOT_BETTER
     assert env.c.quote(cid)["original_total"]==env.c.quote(cid)["effective_total"]
 
+def test_equal_price_does_not_change_cap(env):
+    cid=ready(env)
+    document(env,price=100)
+    _,status=assess(env,cid)
+    assert status==env.p.NOT_BETTER
+    assert env.c.quote(cid)["effective_total"]==env.c.quote(cid)["original_total"]
+
 def test_no_unbounded_discount_below_zero(env):
     cid=ready(env)
     document(env,price=-3)
@@ -166,6 +173,12 @@ def test_bad_url_scope_fails(env):
     for url in ["http://provider/offers/1.json","https://raw.githubusercontent.com/attacker/repo/main/offers/x.json",PREFIX+"../evil.json",PREFIX+"fake.json?x=1",PREFIX+"fake.txt"]:
         with pytest.raises(Exception):env.c.submit_offer(cid,url)
 
+def test_wrong_authoritative_path_rejected_without_other_url_markers(env):
+    cid=ready(env)
+    clean_wrong_path="https://raw.githubusercontent.com/attacker/official-offers/main/offers/offer.json"
+    with pytest.raises(Exception):
+        env.c.submit_offer(cid,clean_wrong_path)
+
 def test_shared_host_root_prefix_rejected(env):
     with pytest.raises(Exception):propose(env,source_prefix="https://raw.githubusercontent.com/")
 
@@ -210,6 +223,22 @@ def test_invalid_unknown_json_fields_rejected(env):
     document(env,unknown="extra")
     _,status=assess(env,cid)
     assert status==env.p.INVALID_SOURCE
+
+def test_duplicate_json_keys_are_rejected(env):
+    cid=ready(env)
+    document(env)
+    raw=env.web.pages[URL].decode()
+    raw=raw.replace('"offer_id":"o-1"', '"offer_id":"o-1","offer_id":"o-2"', 1)
+    env.web.pages[URL]=raw.encode()
+    _,status=assess(env,cid)
+    assert status==env.p.INVALID_SOURCE
+    assert "invalid source" in env.c.get_offer(1)["reason"]
+
+def test_proposal_rejects_boolean_numeric_inputs(env):
+    with pytest.raises(Exception, match="quantity"):
+        propose(env, quantity=True)
+    with pytest.raises(Exception, match="end time"):
+        propose(env, end_at=True)
 
 def test_second_lower_offer_monotonic(env):
     cid=ready(env);document(env,price=80)
@@ -263,11 +292,55 @@ def test_validator_rejects_forged_price(env):
     with pytest.raises(ValueError,match="rejected forged price"):
         env.c.evaluate_offer(oid)
 
+@pytest.mark.parametrize("field,value", [
+    ("source_digest", "0"*64),
+    ("payload_digest", "f"*64),
+    ("data", {"offer_id":"forged"}),
+])
+def test_validator_rejects_forged_material_observation(env,field,value):
+    cid=ready(env);document(env)
+    original=env.gl.vm.run_nondet_unsafe
+    def malicious(leader,validator):
+        data=leader();data[field]=value
+        if not validator(env.gl.vm.Return(data)):
+            raise ValueError("rejected forged material observation")
+        return data
+    env.gl.vm.run_nondet_unsafe=malicious
+    oid=env.c.submit_offer(cid,URL)
+    with pytest.raises(ValueError,match="rejected forged material observation"):
+        env.c.evaluate_offer(oid)
+    assert env.c.get_offer(oid)["attempts"]==0
+    env.gl.vm.run_nondet_unsafe=original
+
 def test_offer_limit(env):
     cid=ready(env)
+    env.gl.message.sender_address="outsider"
     for i in range(env.p.MAX_OFFERS):
         env.c.submit_offer(cid,PREFIX+str(i)+".json")
     with pytest.raises(Exception,match="offer limit"):env.c.submit_offer(cid,PREFIX+"over.json")
+
+def test_trusted_provider_reserve_survives_public_pool_exhaustion(env):
+    cid=ready(env)
+    env.gl.message.sender_address="outsider"
+    for i in range(env.p.MAX_OFFERS):
+        env.c.submit_offer(cid,PREFIX+"public-"+str(i)+".json")
+    env.gl.message.sender_address="provider"
+    oid=env.c.submit_offer(cid,PREFIX+"provider-reserved.json")
+    got=env.c.get_covenant(cid)
+    assert oid > env.p.MAX_OFFERS
+    assert got["provider_reserved_count"] == 1
+    assert got["offer_count"] == env.p.MAX_OFFERS + 1
+
+def test_trusted_reserve_is_bounded(env):
+    cid=ready(env)
+    env.gl.message.sender_address="outsider"
+    for i in range(env.p.MAX_OFFERS):
+        env.c.submit_offer(cid,PREFIX+"pool-"+str(i)+".json")
+    env.gl.message.sender_address="provider"
+    for i in range(env.p.MAX_TRUSTED_RESERVED_OFFERS):
+        env.c.submit_offer(cid,PREFIX+"provider-"+str(i)+".json")
+    with pytest.raises(Exception, match="offer limit"):
+        env.c.submit_offer(cid,PREFIX+"provider-over.json")
 
 def test_buyer_cannot_increase_price_cap(env):
     cid=ready(env)

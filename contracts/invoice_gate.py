@@ -39,8 +39,12 @@ class ParityInvoiceGate(gl.Contract):
         key = str(invoice_hash).lower().strip()
         if len(key)!=64 or any(c not in "0123456789abcdef" for c in key):
             raise gl.vm.UserError("GATE: invoice_hash must be 64 lowercase hex chars")
-        if len(expected_hash)!=64 or any(c not in "0123456789abcdef" for c in expected_hash):
+        if (not isinstance(expected_hash, str) or len(expected_hash)!=64 or
+            any(c not in "0123456789abcdef" for c in expected_hash)):
             raise gl.vm.UserError("GATE: covenant hash is invalid")
+        if (isinstance(amount_minor, bool) or not isinstance(amount_minor, int) or
+            int(amount_minor) <= 0):
+            raise gl.vm.UserError("GATE: invoice amount must be a positive integer")
         if key in self.consumed:
             raise gl.vm.UserError("GATE: invoice already authorized")
         parity = IParity(self.parity_address)
@@ -71,3 +75,8 @@ class ParityInvoiceGate(gl.Contract):
         return {"beneficiary": str(record.beneficiary), "covenant_id": int(record.covenant_id),
                 "covenant_hash": str(record.covenant_hash), "amount_minor": int(record.amount_minor),
                 "currency": str(record.currency)}
+
+    @gl.public.view
+    def get_parity_address(self) -> str:
+        """Return the immutable Parity address used by this gate."""
+        return str(self.parity_address)

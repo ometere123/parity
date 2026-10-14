@@ -45,7 +45,16 @@ def check_contracts() -> None:
 
 def check_rpc() -> None:
     payload = json.dumps({"jsonrpc":"2.0","id":23,"method":"eth_chainId","params":[]}).encode("utf-8")
-    req = urllib.request.Request(RPC, data=payload, headers={"Content-Type":"application/json"})
+    req = urllib.request.Request(
+        RPC,
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            # StudioNet's gateway rejects urllib's default request identity.
+            # This remains a read-only chain guard; it does not alter the RPC.
+            "User-Agent": "parity-preflight/1.0",
+        },
+    )
     try:
         with urllib.request.urlopen(req, timeout=12) as rsp:
             obj=json.loads(rsp.read(8192).decode("utf-8"))
@@ -62,11 +71,18 @@ def check_lint() -> None:
     tool=shutil.which("genvm-lint")
     if not tool:
         fail("genvm-lint missing. Install requirements-dev.txt into a Python virtual environment")
+    lint_env = os.environ.copy()
+    # The linter emits a check-mark on success; keep the guard usable on
+    # Windows installations whose inherited console still uses cp1252.
+    lint_env.setdefault("PYTHONIOENCODING", "utf-8")
+    # Validation must use the stable runtime targeted by this repository,
+    # even if a newer artifact happens to be cached on the developer machine.
+    lint_env["GENVM_VERSION"] = "v0.2.12"
     for name in ("parity.py", "invoice_gate.py"):
         path=ROOT/"contracts"/name
         for command in ("lint", "validate"):
             print("Running", tool, command, path, flush=True)
-            result=subprocess.run([tool,command,str(path)],cwd=ROOT,check=False)
+            result=subprocess.run([tool,command,str(path)],cwd=ROOT,check=False,env=lint_env)
             if result.returncode:
                 fail(f"genvm-lint {command} failed for {name} (exit {result.returncode})")
 

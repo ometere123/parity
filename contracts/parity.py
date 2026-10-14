@@ -18,7 +18,11 @@ MAX_STRING = 460
 MAX_URL = 512
 MAX_SOURCE_BYTES = 10000
 MAX_REASON = 360
+# MAX_OFFERS is the permissionless public pool.  The named provider and
+# protected beneficiary each retain a small bounded reserve so unrelated
+# submitters cannot permanently fill every assessment slot.
 MAX_OFFERS = 64
+MAX_TRUSTED_RESERVED_OFFERS = 16
 MAX_ATTEMPTS = 3
 MAX_TERM = 36
 MAX_QUANTITY = 100000
@@ -53,6 +57,8 @@ class Covenant:
     best_offer_id: u256
     definition_hash: str
     offer_count: u32
+    provider_reserved_count: u32
+    beneficiary_reserved_count: u32
 
 @allow_storage
 @dataclass
@@ -96,7 +102,13 @@ def err(reason: str):
 
 
 def now_seconds() -> int:
-    raw = getattr(getattr(gl.message, "raw", None), "datetime", None)
+    # Stable py-genlayer exposes transaction metadata through the raw mapping
+    # (`gl.message_raw`); the older object-shaped fallback keeps the offline
+    # harness compatible without changing the production source of time.
+    raw_message = getattr(gl, "message_raw", None)
+    raw = raw_message.get("datetime") if isinstance(raw_message, dict) else None
+    if raw is None:
+        raw = getattr(getattr(gl.message, "raw", None), "datetime", None)
     if isinstance(raw, int):
         return raw
     if not isinstance(raw, str) or not raw:
@@ -186,12 +198,22 @@ def digest(data: bytes) -> str:
     return Keccak256(data).hexdigest()
 
 
+def reject_duplicate_pairs(pairs: list[tuple[typing.Any, typing.Any]]) -> dict:
+    """Build a JSON object while rejecting ambiguous duplicate keys."""
+    obj = {}
+    for key, value in pairs:
+        if key in obj:
+            raise ValueError("duplicate JSON key")
+        obj[key] = value
+    return obj
+
+
 def parse_offer_document(raw: bytes, covenant: dict) -> dict:
     if not isinstance(raw, bytes) or not raw or len(raw) > MAX_SOURCE_BYTES:
         raise ValueError("source missing or outside byte limit")
     try:
         decoded = raw.decode("utf-8", "strict")
-        data = json.loads(decoded)
+        data = json.loads(decoded, object_pairs_hook=reject_duplicate_pairs)
     except Exception:
         raise ValueError("source is not UTF-8 JSON")
     if not isinstance(data, dict):
@@ -371,10 +393,15 @@ class Parity(gl.Contract):
             ("exclusions",exclusions),("audience",audience),
         )]
         try:
-            original = total_cost(int(quantity),int(term_months),int(unit_price_minor),int(setup_fee_minor),int(recurring_fee_minor))
+            # Validate the caller values before any coercion.  In particular,
+            # bool is an int subclass in Python and must not become a monetary
+            # or quantity value merely because it was converted with int().
+            original = total_cost(quantity,term_months,unit_price_minor,setup_fee_minor,recurring_fee_minor)
         except ValueError as exc:
             err(str(exc))
         current = now_seconds()
+        if isinstance(end_at, bool) or not isinstance(end_at, int):
+            err("end time must be an integer")
         if int(end_at) <= current + 60 or int(end_at) > current + MAX_DURATION:
             err("end time must be future and no more than 366 days")
         cid = self.next_covenant_id
@@ -388,6 +415,8 @@ class Parity(gl.Contract):
         c.start_at, c.end_at, c.activated_at = u256(current), u256(int(end_at)), u256(0)
         c.status, c.original_total, c.best_total, c.best_offer_id = u8(DRAFT),u256(original),u256(original),u256(0)
         c.offer_count = u32(0)
+        c.provider_reserved_count = u32(0)
+        c.beneficiary_reserved_count = u32(0)
         frozen = {
             "version": 1, "chain_id": 61999, "beneficiary": str(sender), "provider": str(provider),
             "provider_key": provider_key, "source_prefix": source_prefix, "currency": currency,
@@ -437,7 +466,17 @@ class Parity(gl.Contract):
         if int(self.url_seen.get(unique) or 0) != 0:
             err("duplicate offer URL")
         if int(c.offer_count) >= MAX_OFFERS:
-            err("covenant offer limit")
+            sender = gl.message.sender_address
+            if sender == c.provider:
+                if int(c.provider_reserved_count) >= MAX_TRUSTED_RESERVED_OFFERS:
+                    err("covenant offer limit for trusted provider reserve")
+                c.provider_reserved_count = u32(int(c.provider_reserved_count) + 1)
+            elif sender == c.beneficiary:
+                if int(c.beneficiary_reserved_count) >= MAX_TRUSTED_RESERVED_OFFERS:
+                    err("covenant offer limit for trusted beneficiary reserve")
+                c.beneficiary_reserved_count = u32(int(c.beneficiary_reserved_count) + 1)
+            else:
+                err("covenant offer limit")
         oid = self.next_offer_id
         self.next_offer_id = u256(int(oid)+1)
         o = self.offers.get_or_insert_default(oid)
@@ -543,6 +582,8 @@ class Parity(gl.Contract):
             "activated_at":int(c.activated_at),"definition_hash":str(c.definition_hash),
             "original_total":int(c.original_total),"best_total":int(c.best_total),
             "best_offer_id":int(c.best_offer_id),"offer_count":int(c.offer_count),
+            "provider_reserved_count":int(c.provider_reserved_count),
+            "beneficiary_reserved_count":int(c.beneficiary_reserved_count),
         }
 
     @gl.public.view
@@ -570,5 +611,8 @@ class Parity(gl.Contract):
     def is_quote_within_cap(self, covenant_id: u256, expected_hash: str, total_minor: u256) -> bool:
         c = self._c(covenant_id)
         ts = now_seconds()
+        if (not isinstance(expected_hash, str) or isinstance(total_minor, bool) or
+            not isinstance(total_minor, int) or int(total_minor) < 0):
+            return False
         return (int(c.status)==ACTIVE and int(c.activated_at)>0 and ts<int(c.end_at) and
                 expected_hash == str(c.definition_hash) and int(total_minor) <= int(c.best_total))

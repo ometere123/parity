@@ -3,9 +3,50 @@ import sys
 import types
 import hashlib
 import importlib.util
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 import pytest
+
+
+if sys.platform == "win32":
+    # genlayer-test 0.29.2 keeps a duplicated temporary stdin handle open on
+    # Windows and reports WinError 32 when unlinking it.  The descriptor has
+    # already been installed successfully; keep this compatibility shim
+    # limited to that cleanup error so all other runner failures remain fatal.
+    from gltest.direct import loader as _direct_loader
+
+    _original_inject_message = _direct_loader._inject_message_to_fd0
+
+    def _windows_safe_inject_message(vm):
+        try:
+            _original_inject_message(vm)
+        except PermissionError as exc:
+            if getattr(exc, "winerror", None) != 32:
+                raise
+
+    _direct_loader._inject_message_to_fd0 = _windows_safe_inject_message
+
+
+# genlayer-test 0.29.2 does not refresh message_raw.datetime when a Direct
+# Mode VM clock is warped, although the contract reads that raw message in the
+# stable v0.2.12 runtime.  Keep the test clock and raw message synchronized.
+try:
+    from gltest.direct import vm as _direct_vm_module
+
+    _original_warp = _direct_vm_module.VMContext.warp
+
+    def _warp_with_raw_message(self, timestamp):
+        _original_warp(self, timestamp)
+        gl_module = sys.modules.get("genlayer.gl")
+        raw_message = getattr(gl_module, "message_raw", None) if gl_module else None
+        if isinstance(raw_message, dict):
+            raw_message["datetime"] = timestamp
+
+    _direct_vm_module.VMContext.warp = _warp_with_raw_message
+except ImportError:
+    # Offline-only environments do not install the official runner.
+    pass
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -65,7 +106,8 @@ def env(monkeypatch):
     )
     gm.gl = genlayer
     monkeypatch.setitem(sys.modules,"genlayer",gm)
-    spec = importlib.util.spec_from_file_location("parity_contract",ROOT/"contracts"/"parity.py")
+    contract_path = Path(os.environ.get("PARITY_CONTRACT_PATH", str(ROOT/"contracts"/"parity.py")))
+    spec = importlib.util.spec_from_file_location("parity_contract",contract_path)
     module = importlib.util.module_from_spec(spec)
     monkeypatch.setitem(sys.modules,"parity_contract",module)
     spec.loader.exec_module(module)

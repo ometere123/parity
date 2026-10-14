@@ -72,3 +72,16 @@ def test_consumer_refuses_draft_or_expired(env):
     set_time(env,"2026-12-14T12:00:00+00:00")
     with pytest.raises(Exception,match="exceeds"):
         gate.authorize_invoice(cid,h,"b"*64,1)
+
+def test_consumer_exposes_bound_parity_address(env):
+    mod,gate=gate_fixture(env)
+    assert gate.get_parity_address()=="parity-contract"
+
+def test_consumer_rejects_nonpositive_or_boolean_amount(env):
+    cid=ready(env)
+    h=env.c.get_covenant(cid)["definition_hash"]
+    _,gate=gate_fixture(env)
+    with pytest.raises(Exception,match="positive integer"):
+        gate.authorize_invoice(cid,h,"c"*64,0)
+    with pytest.raises(Exception,match="positive integer"):
+        gate.authorize_invoice(cid,h,"d"*64,True)

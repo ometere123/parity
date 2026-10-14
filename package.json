@@ -6,7 +6,10 @@
   "scripts": {
     "cli:version": "genlayer --version",
     "network": "genlayer network info",
-    "deploy:studionet": "python scripts/deploy_studionet.py"
+    "deploy:studionet": "python scripts/deploy_studionet.py",
+    "test": "python -m pytest tests -q",
+    "test:direct": "python -m pytest tests/direct -q",
+    "test:mutation": "python scripts/run_mutation_tests.py"
   },
   "devDependencies": {
     "genlayer": "0.39.1"

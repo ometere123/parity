@@ -24,8 +24,19 @@ jobs:
       - name: Check stable CLI pin and Python syntax
         run: python scripts/preflight.py --offline
       - name: Offline state/consensus tests
+        env:
+          GENVM_VERSION: v0.2.12
+          PYTHONIOENCODING: utf-8
         run: python -m pytest tests -q
+      - name: Security-critical mutation tests
+        env:
+          GENVM_VERSION: v0.2.12
+          PYTHONIOENCODING: utf-8
+        run: python scripts/run_mutation_tests.py
       - name: GenVM pinned semantic validation
+        env:
+          GENVM_VERSION: v0.2.12
+          PYTHONIOENCODING: utf-8
         run: |
           genvm-lint lint contracts/parity.py
           genvm-lint lint contracts/invoice_gate.py
