@@ -113,14 +113,22 @@ If Python's venv is unavailable, install test dependencies into the currently se
 
 Current network reference: [GenLayer Networks](https://docs.genlayer.com/developers/networks), [CLI v0.39.1](https://docs.genlayer.com/api-references/genlayer-cli), [GenVM Linter](https://docs.genlayer.com/api-references/genlayer-linter).
 
-## Tests and proof status
+## Verified development and StudioNet proof
 
-- `38` deterministic **offline Python mock-harness** tests ran successfully in the authoring environment (state, economics, replay, malformed source, semantic uncertainty, mocked leader/validator conflicts, and optional consumer).
-- Contract files compile with the host Python interpreter.
-- **NOT YET VERIFIED IN THIS ENVIRONMENT:** pinned GenVM SDK semantic lint, official GenLayer Direct Mode/GenVM preflight, remote consensus, deployed source parity, finality and live Studionet transaction hashes. This environment cannot access npm/PyPI or authenticated network-wallet operations; nothing is fabricated in place of those checks.
-- GitHub CI additionally attempts stable pinned CLI install and GenVM semantic lint; check its status before accepting the repository as deployment-ready.
+The current verification run recorded:
 
-See [`docs/LIVE_STUDIONET_RUNBOOK.md`](docs/LIVE_STUDIONET_RUNBOOK.md) and [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
+- `57` offline Python tests (`python -m pytest tests -q`);
+- `8` official Direct Mode tests (`python -m pytest tests/direct -q`);
+- `12/12` security-critical mutation checks killed;
+- GenVM lint: `3/3` checks passed for each contract;
+- GenVM semantic validation passed for both contracts;
+- repository-local CLI `genlayer@0.39.1` and Python `genvm-linter==0.11.0`, `genlayer-test==0.29.2`.
+
+The final contracts are deployed on stable StudioNet (`61999`) and their retrieved source bytes match the committed contract files exactly. A live covenant, provider ratification, comparable lower offer, non-triggering/invalid offer records and InvoiceGate authorization/rejection paths are recorded in [`DEPLOYMENT.md`](DEPLOYMENT.md), [`SUBMISSION.md`](SUBMISSION.md) and [`artifacts/studionet_proof.json`](artifacts/studionet_proof.json).
+
+The live offer documents are repository-controlled fixtures for reproducible protocol evidence; they are not independent proof of third-party pricing or complete market discovery. Source-unavailable evaluation was attempted but remained in `COMMITTING` and is recorded as pending rather than presented as finalized evidence.
+
+See [`docs/LIVE_STUDIONET_RUNBOOK.md`](docs/LIVE_STUDIONET_RUNBOOK.md), [`docs/CONSENSUS.md`](docs/CONSENSUS.md) and [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
 
 ## Intended reuse
 

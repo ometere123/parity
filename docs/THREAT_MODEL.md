@@ -28,7 +28,7 @@
 | Changed source mid-consensus | exact raw digest and canonical payload digest comparison, fail closed |
 | Malicious leader fabricates equivalence | independent refetch and LLM re-adjudication; exact six-facet agreement |
 | Unavailable site | bounded retries, no trigger, no automatic assumption of favourable pricing |
-| Malicious third party spams candidates | per covenant MAX_OFFERS=64; this limits growth but is a griefing vector. Consumers should maintain a controlled registry or charge caller-level gas/bonds if available |
+| Malicious third party spams candidates | per covenant MAX_OFFERS=64 bounds storage, and provider/beneficiary each retain a bounded trusted reserve after the public pool fills. This is a bounded permissionless-admission tradeoff, not an unlimited storage path. |
 | Contract tries to repay supplier directly | deliberately impossible; no custody or generic GEN transfer interface |
 | Future offer price goes up | best verified cost never increases |
 | Forged consumer invoice | exact covenant hash, beneficiary caller, amount cap and invoice-hash replay protection |
@@ -41,3 +41,7 @@
 - Full history of all provider offers or fairness when the provider hides some offers.
 - Authorization to move real GEN from either party; the downstream settlement IC is responsible for its own funds and ambiguous transfer recovery.
 - Live pricing continuous monitoring or a guarantee that every offer is captured.
+
+## Verified deployment boundary
+
+The current StudioNet proof is recorded in [`../DEPLOYMENT.md`](../DEPLOYMENT.md) and [`../artifacts/studionet_proof.json`](../artifacts/studionet_proof.json). It proves a finalized lower comparable offer, a finalized higher-price no-op, a finalized wrong-provider rejection, duplicate-offer protection, and InvoiceGate authorization/rejection paths. A weaker-support evaluation was observed as NONCOMPARABLE before its transaction became unavailable from the RPC, and a missing-source evaluation remained COMMITTING; neither is represented as finalized live evidence. The repository-controlled fixture limitation remains material.
