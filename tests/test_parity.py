@@ -93,6 +93,40 @@ def test_offer_lower_price_triggers(env):
     assert not env.c.is_quote_within_cap(cid,env.c.get_covenant(cid)["definition_hash"],expected+1)
     assert not env.c.is_quote_within_cap(cid,"0"*64,expected)
 
+@pytest.mark.parametrize("status", [404, 500, 302])
+def test_non_success_http_status_never_triggers(env, status):
+    cid=ready(env)
+    document(env)
+    raw=env.web.pages[URL]
+    env.web.pages[URL]={"status":status,"body":raw}
+    oid=env.c.submit_offer(cid,URL)
+    assert env.c.evaluate_offer(oid)==env.p.PENDING
+    assert env.c.quote(cid)["effective_total"]==env.c.quote(cid)["original_total"]
+    assert env.c.evaluate_offer(oid)==env.p.PENDING
+    assert env.c.evaluate_offer(oid)==env.p.SOURCE_UNAVAILABLE
+    assert env.c.get_offer(oid)["status"]==env.p.SOURCE_UNAVAILABLE
+    assert env.c.quote(cid)["effective_total"]==env.c.quote(cid)["original_total"]
+
+def test_missing_http_status_never_triggers(env):
+    cid=ready(env)
+    document(env)
+    raw=env.web.pages[URL]
+    env.web.pages[URL]={"body":raw}
+    oid,status=assess(env,cid)
+    assert status==env.p.PENDING
+    assert env.c.get_offer(oid)["attempts"]==1
+    assert env.c.quote(cid)["effective_total"]==env.c.quote(cid)["original_total"]
+
+def test_malformed_http_status_never_triggers(env):
+    cid=ready(env)
+    document(env)
+    raw=env.web.pages[URL]
+    env.web.pages[URL]={"status":"200","body":raw}
+    oid,status=assess(env,cid)
+    assert status==env.p.PENDING
+    assert env.c.get_offer(oid)["attempts"]==1
+    assert env.c.quote(cid)["effective_total"]==env.c.quote(cid)["original_total"]
+
 def test_nonbetter_price_does_not_change_cap(env):
     cid=ready(env)
     document(env,price=120)

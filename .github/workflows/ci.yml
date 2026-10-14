@@ -28,6 +28,11 @@ jobs:
           GENVM_VERSION: v0.2.12
           PYTHONIOENCODING: utf-8
         run: python -m pytest tests -q
+      - name: Official Direct Mode tests
+        env:
+          GENVM_VERSION: v0.2.12
+          PYTHONIOENCODING: utf-8
+        run: python -m pytest tests/direct -q
       - name: Security-critical mutation tests
         env:
           GENVM_VERSION: v0.2.12

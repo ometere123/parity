@@ -74,7 +74,14 @@ class MockWeb:
         value = self.pages[url]
         if isinstance(value, Exception):
             raise value
-        return types.SimpleNamespace(body=value)
+        if isinstance(value, dict):
+            attrs = {}
+            if "status" in value:
+                attrs["status"] = value["status"]
+            if "body" in value:
+                attrs["body"] = value["body"]
+            return types.SimpleNamespace(**attrs)
+        return types.SimpleNamespace(status=200, body=value)
 
 @pytest.fixture
 def env(monkeypatch):

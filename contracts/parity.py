@@ -306,6 +306,13 @@ def inspect_once(url: str, baseline: dict, ts: int) -> dict:
     # re-fetch the *same exact source* and re-evaluate all material facets.
     try:
         response = gl.nondet.web.get(url)
+        status = getattr(response, "status", None)
+        # A body is authenticated as public source evidence only when the
+        # pinned runtime reports a successful HTTP response.  Do not accept
+        # valid-looking JSON returned with an error page, redirect, or a
+        # response whose status shape is unavailable to the contract.
+        if isinstance(status, bool) or not isinstance(status, int) or status < 200 or status >= 300:
+            return {"kind": "UNAVAILABLE"}
         raw = response.body
         if isinstance(raw, str):
             raw = raw.encode("utf-8")

@@ -62,11 +62,14 @@ def offer_document(*, offer_id="offer-1", price=70, **overrides):
     return data
 
 
-def install_offer(vm, url=URL, **kwargs):
-    vm.mock_web(r"offers\.example\.com/provider/offer-[0-9]+\.json", {
-        "status": 200,
-        "body": json.dumps(offer_document(**kwargs), separators=(",", ":")),
-    })
+def install_offer(vm, url=URL, response_status=200, include_status=True, **kwargs):
+    body = json.dumps(offer_document(**kwargs), separators=(",", ":"))
+    response = {"body": body}
+    if include_status:
+        response["status"] = response_status
+    else:
+        response = {"response": response}
+    vm.mock_web(r"offers\.example\.com/provider/offer-[0-9]+\.json", response)
     vm.mock_llm(r"BASELINE_JSON=", semantic_response())
 
 
@@ -100,6 +103,39 @@ def test_direct_successful_comparable_offer(direct_vm, direct_deploy, direct_ali
     assert contract.evaluate_offer(oid) == 2  # TRIGGERED
     assert contract.quote(cid)["effective_total"] == 87400
     assert direct_vm.run_validator() is True
+
+
+@pytest.mark.direct
+@pytest.mark.parametrize("response_status", [404, 500])
+def test_direct_non_success_http_status_never_triggers(direct_vm, direct_deploy, direct_alice, direct_bob, response_status):
+    contract, cid = deploy_ready(direct_vm, direct_deploy, direct_alice, direct_bob)
+    install_offer(direct_vm, response_status=response_status)
+    direct_vm.sender = direct_alice
+    oid = contract.submit_offer(cid, URL)
+    assert contract.evaluate_offer(oid) == 1  # PENDING; retryable source failure
+    assert contract.evaluate_offer(oid) == 1
+    assert contract.evaluate_offer(oid) == 6  # SOURCE_UNAVAILABLE after bounded retries
+    assert contract.quote(cid)["effective_total"] == 123400
+
+
+@pytest.mark.direct
+def test_direct_missing_http_status_never_triggers(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract, cid = deploy_ready(direct_vm, direct_deploy, direct_alice, direct_bob)
+    install_offer(direct_vm, include_status=False)
+    direct_vm.sender = direct_alice
+    oid = contract.submit_offer(cid, URL)
+    assert contract.evaluate_offer(oid) == 1
+    assert contract.quote(cid)["effective_total"] == 123400
+
+
+@pytest.mark.direct
+def test_direct_malformed_http_status_never_triggers(direct_vm, direct_deploy, direct_alice, direct_bob):
+    contract, cid = deploy_ready(direct_vm, direct_deploy, direct_alice, direct_bob)
+    install_offer(direct_vm, response_status="200")
+    direct_vm.sender = direct_alice
+    oid = contract.submit_offer(cid, URL)
+    assert contract.evaluate_offer(oid) == 1
+    assert contract.quote(cid)["effective_total"] == 123400
 
 
 @pytest.mark.direct
