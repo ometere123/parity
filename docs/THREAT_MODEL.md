@@ -1,47 +1,52 @@
 # Security and economic assumptions
 
-**Critical:** Parity is not an escrow and it cannot enforce refunds against external suppliers. It implements an on-chain entitlement/price ceiling that participating consumers can enforce.
+Parity is not escrow. It records an on-chain entitlement/price ceiling that
+participating consumers can enforce; it does not collect funds, charge
+customers, refund invoices or prove that every market offer was discovered.
 
 ## Trust boundaries
 
-- A beneficiary can create any proposed covenant; it is not active until the named provider wallet ratifies it.
-- The provider's ratification explicitly endorses the whole immutable proposal including the exact HTTPS source path. It is an on-chain endorsement, **not cryptographic proof of DNS or GitHub ownership**.
-- Anyone can point the primitive to public offer JSON under that source path; the provider cannot veto a genuine candidate *after* ratification. However a provider may conceal offers elsewhere, move content, or simply decline to publish the standard JSON. There is no exhaustive market completeness proof.
-- A shared hosting domain alone is unsafe. The exact path prefix must pin the provider's owned repository/path. Source host HTTPS trust and public web availability are external dependencies.
-- A document can change between fetches; leader and validators require the same source bytes digest and canonical payload. If they disagree, consensus rejects/rotates.
-- HTTP success does not guarantee honest publisher statements. A provider can lie in its own public JSON; buyers must choose trustworthy source rules.
-- `published_at` is declared by the source publisher. The consensus timestamp ensures it is not in the future, but it is not a cryptographic original-publication timestamp. This is a **provenance limitation**; it must not be represented as otherwise.
-- A posted source might be removed after a trigger. Historical results remain; no automatic retroactive cancellation of a legitimately triggered cap is possible.
+- A beneficiary can propose a covenant, but it remains DRAFT until the named
+  provider wallet ratifies the immutable definition.
+- Provider-wallet ratification endorses the exact source prefix and baseline.
+  It is not cryptographic proof of DNS, GitHub or commercial-domain ownership.
+- The source publisher declares published_at. The contract bounds it against
+  activation and consensus time but does not attest the original publication
+  timestamp.
+- Repository-controlled fixtures are reproducible protocol evidence, not
+  independent proof of third-party commercial pricing.
+- A valid HTTP response status authenticates transport success, not the truth
+  of the provider's JSON. Missing or malformed status, network failure,
+  redirects, 4xx and 5xx bodies are rejected before they can affect the cap.
 
-## Adversarial cases
+## Adversarial cases and controls
 
-| Attack | Defence / limitation |
+| Attack | Defence or honest limitation |
 |---|---|
-| Provider spoofed by requester | proposal stays DRAFT without supplier wallet ratification |
-| Wrong source/redirect/traversal | exact HTTPS path prefix and independent downloaded evidence; response redirects are a residual HTTP-client trust dependency |
-| Reuse same offer URL | duplicate URL admission guard; invalid/unavailable URL releases reservation so genuine publication can be retried |
-| Same external offer under new URL | `(covenant_id, provider_offer_id)` uniqueness after successful assessment |
-| Invented cheap amount | full objective quote computed from fetched strict schema and reproduced in validator |
-| Hidden one-time fee | mandatory structured setup/recurring fees; dishonest or omitted commercial terms remain an external source risk |
-| Cheaper but inferior service | six substantive semantic comparison facets, any FAIL or UNCERTAIN prevents trigger |
-| Missing audience coverage | explicit beneficiary audience facet; a private/targeted offer cannot automatically qualify |
-| Changed source mid-consensus | exact raw digest and canonical payload digest comparison, fail closed |
-| Malicious leader fabricates equivalence | independent refetch and LLM re-adjudication; exact six-facet agreement |
-| Unavailable site | bounded retries, no trigger, no automatic assumption of favourable pricing |
-| Malicious third party spams candidates | per covenant MAX_OFFERS=64 bounds storage, and provider/beneficiary each retain a bounded trusted reserve after the public pool fills. This is a bounded permissionless-admission tradeoff, not an unlimited storage path. |
-| Contract tries to repay supplier directly | deliberately impossible; no custody or generic GEN transfer interface |
-| Future offer price goes up | best verified cost never increases |
-| Forged consumer invoice | exact covenant hash, beneficiary caller, amount cap and invoice-hash replay protection |
-| Arbitrary hidden dependencies | only one flat monthly pricing model supported; non-flat terms are out of scope |
+| Provider spoofed by requester | The proposal remains DRAFT without the named provider's ratification. |
+| Unauthorized source or path substitution | HTTPS, public-DNS, credentials/port/query/fragment/traversal restrictions and the full ratified path prefix are checked. |
+| Non-success HTTP body containing valid JSON | Response status must be an integer 2xx; 3xx/4xx/5xx/missing/malformed status is unavailable evidence. |
+| Source changes between observers | Leader and validators independently refetch and require the decision-critical source/payload/economic observations to agree. |
+| Fabricated cheap amount | Validators recompute strict JSON fields and the contract recomputes the integer full-term total. |
+| Hidden fee or unsupported pricing model | Setup, recurring and unit fees are mandatory integer fields; non-flat or missing structures fail closed. |
+| Cheaper but inferior service | Scope, tier, support, territory, exclusions and audience must all be PASS; FAIL or UNCERTAIN has no economic effect. |
+| Prompt injection | Remote text is bounded as data in the semantic prompt and cannot call a transfer, alter a covenant or choose arithmetic. |
+| Offer replay | The exact covenant/URL reservation and successful provider offer ID are protected by separate duplicate checks. |
+| Public-pool exhaustion | MAX_OFFERS is bounded while reserved provider/beneficiary capacity remains bounded and explicit. |
+| Future price increase | best_total only decreases on a strictly cheaper all-PASS assessment. |
+| Consumer bypass | InvoiceGate is bound at construction, requires the beneficiary caller, the current covenant hash, the active cap and a fresh invoice hash. |
+| Replay through formatting | Invoice hashes and covenant hashes are validated as fixed-length hexadecimal values and invoice keys are normalized before storage. |
 
-## Non-goals
+## Residual assumptions
 
-- Private offers, tax/FX calculations, financing, rebates, contingent discounts, bundled cross-product concessions.
-- Universal legal interpretation, automatic retroactive credits/refunds, attested original publication timestamp.
-- Full history of all provider offers or fairness when the provider hides some offers.
-- Authorization to move real GEN from either party; the downstream settlement IC is responsible for its own funds and ambiguous transfer recovery.
-- Live pricing continuous monitoring or a guarantee that every offer is captured.
+The provider can withhold an offer, change or remove public source content after
+an assessment, or publish a misleading but schema-valid statement. Parity
+cannot authenticate commercial truth beyond the ratified public source and
+consensus observation. It does not discover private discounts, attest all
+customers receive the same price, or guarantee catalogue completeness.
 
-## Verified deployment boundary
-
-The current StudioNet proof is recorded in [`../DEPLOYMENT.md`](../DEPLOYMENT.md) and [`../artifacts/studionet_proof.json`](../artifacts/studionet_proof.json). It proves a finalized lower comparable offer, a finalized higher-price no-op, a finalized weaker-support `NONCOMPARABLE` result, finalized wrong-provider and missing-source rejections, duplicate-offer protection, and InvoiceGate authorization/rejection paths. The repository-controlled fixture limitation remains material.
+The current finalized StudioNet evidence is in DEPLOYMENT.md and
+artifacts/studionet_proof.json. It includes the HTTP-status correction in the
+current Parity deployment, a lower comparable trigger, a higher-price no-op, a
+weaker-support rejection, and current InvoiceGate positive and negative
+readbacks.

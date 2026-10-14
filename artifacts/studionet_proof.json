@@ -9,212 +9,212 @@
     "genvm_linter": "0.11.0",
     "genlayer_test": "0.29.2"
   },
-  "source": {
-    "contract_commit": "41fc1f17ff910028f6c17cae17120edd57b9169f",
-    "parity": {
-      "path": "contracts/parity.py",
-      "bytes": 29349,
-      "sha256": "3ec8ceca6b72d55ac727b00eaca350a980f08f05a5f0990bf0b74846f7553445",
-      "deployed_source_bytes_match": true
+  "current": {
+    "source": {
+      "parity": {
+        "deployment_commit": "c6c84d48077680d3fc6936542c73d08b96c3fd64",
+        "path": "contracts/parity.py",
+        "git_content_bytes": 29221,
+        "git_content_sha256": "B41909870003925A23A754FE2DF1A1B92EB557A97CC314A99347D7E54BBBBDDA",
+        "rpc_code_bytes_without_terminal_newline": 29220,
+        "rpc_code_sha256_without_terminal_newline": "2B99DADE7DD2C431DC19B31ABB244441AB6F804F8BC441E7F10AA10327191FFB",
+        "content_matches_deployed_source": true
+      },
+      "invoice_gate": {
+        "deployment_commit": "bbea164a12262a7d1408e62079c100a3d00bcebd",
+        "path": "contracts/invoice_gate.py",
+        "git_content_bytes": 4463,
+        "git_content_sha256": "6AC2D5726BFF83D17808FC05190C6FFD87DE8B5781F68E679EF822A62FE20232",
+        "rpc_code_bytes_without_terminal_newline": 4462,
+        "rpc_code_sha256_without_terminal_newline": "DDC8EF0FF16B3A23C7B2EF629857CC530FFE33AD541522F6A771249539775B53",
+        "content_matches_deployed_source": true
+      }
     },
+    "contracts": {
+      "parity": {
+        "address": "0xda1BAE7241c7595893e3AE85952AD91588653B33",
+        "deployment_tx": "0xc6e109402af4a295ac5c2aa247ba7058273030743c66714a88b6476c30da0327",
+        "finality": "FINALIZED",
+        "consensus": "MAJORITY_AGREE",
+        "execution": "SUCCESS"
+      },
+      "invoice_gate": {
+        "address": "0x0Fe103558b5990a2254aB711b8bf080AA3D980F0",
+        "deployment_tx": "0xab52a709b366456aa54e325316e3ef4f47dc0d67d789ed4db56158c17a3ca68d",
+        "finality": "FINALIZED",
+        "consensus": "MAJORITY_AGREE",
+        "execution": "SUCCESS",
+        "bound_parity_readback": "0xda1BAE7241c7595893e3AE85952AD91588653B33"
+      }
+    },
+    "accounts": {
+      "beneficiary": "0x951e6B75530774fF82321a5ae54e14F778F0C855",
+      "provider": "0xB845a69860ba4CDf19CfDC5AfbAF2e20b6bE86b0",
+      "permissionless_submitter": "0x0d5540e0aD4B92Aa0ad4e5F1b8cD645ee1E363E7"
+    },
+    "covenant": {
+      "id": 1,
+      "proposal_tx": "0x6d857a073359e649f2477414b1d8028e46c681752ce42df069363870caa95dcf",
+      "ratification_tx": "0x709b46869bdb27a4c07137cfe5a9bce575535d84e71673b7172d76a879424101",
+      "status": "ACTIVE",
+      "definition_hash": "60aea77b4f55cbe9e3cef26472ecdd568f2e6f48ec2d518d0db5015b1e555f4c",
+      "source_prefix": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/",
+      "original_total_minor": 123400,
+      "best_total_minor": 87400,
+      "best_offer_id": 3,
+      "offer_count": 5,
+      "quote_active": true
+    },
+    "offers": [
+      {
+        "id": 3,
+        "kind": "comparable_lower_price",
+        "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/offer-007-final-comparable.json",
+        "submit_tx": "0xa10e53794220bb7f4de80693c489255ab7841e9209c53eab5685e733f14cc08e",
+        "evaluate_tx": "0x9b46e26961aff612f640a8c89c9c924f69911ef07e45eec45d41122929f9d5c5",
+        "finality": "FINALIZED",
+        "consensus": "MAJORITY_AGREE",
+        "execution": "SUCCESS",
+        "status": "TRIGGERED",
+        "quoted_total_minor": 87400,
+        "source_digest": "0849983919102537eecbc5bb408c8cdb6d30e45626dda1090b80c48653cbca15",
+        "facets": {
+          "scope": "PASS",
+          "tier": "PASS",
+          "support": "PASS",
+          "territory": "PASS",
+          "exclusions": "PASS",
+          "audience": "PASS"
+        }
+      },
+      {
+        "id": 4,
+        "kind": "more_expensive",
+        "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/offer-008-final-more-expensive.json",
+        "submit_tx": "0x057a061cc2c43024fdfe7dbe102b7b508c8759a11ab3e1666da2e7fabd739a85",
+        "evaluate_tx": "0x76d4350928f36fddf554266b0f4ed0bc987c26a81f75147f8ee9945629ea8736",
+        "finality": "FINALIZED",
+        "consensus": "MAJORITY_AGREE",
+        "execution": "SUCCESS",
+        "status": "NOT_BETTER",
+        "quoted_total_minor": 147400,
+        "best_total_after_minor": 87400,
+        "source_digest": "6e003ba89cc5305d4aa99439dc499d567e1b170900212446c9cf4cef2459710e",
+        "facets": {
+          "scope": "PASS",
+          "tier": "PASS",
+          "support": "PASS",
+          "territory": "PASS",
+          "exclusions": "PASS",
+          "audience": "PASS"
+        }
+      },
+      {
+        "id": 5,
+        "kind": "cheaper_weaker_support",
+        "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/offer-009-final-weaker-support.json",
+        "submit_tx": "0xea1d6f7c7b0b9583ddeae908d5630b9a0a5601bdb5632b5e01f7d9509cc7332b",
+        "evaluate_tx": "0xe64b6f48af1cd1568fe659fa7ae1fcf292c36fac4ec7cff40909c3875e173fe6",
+        "finality": "FINALIZED",
+        "consensus": "MAJORITY_AGREE",
+        "execution": "SUCCESS",
+        "status": "NONCOMPARABLE",
+        "quoted_total_minor": 75400,
+        "best_total_after_minor": 87400,
+        "source_digest": "9a77f2cfe1f6d5ba4a63ae5767d78421aaf1b747990e004984d0ee58acf2ad5d",
+        "facets": {
+          "scope": "PASS",
+          "tier": "PASS",
+          "support": "FAIL",
+          "territory": "PASS",
+          "exclusions": "PASS",
+          "audience": "PASS"
+        }
+      }
+    ],
     "invoice_gate": {
-      "path": "contracts/invoice_gate.py",
-      "bytes": 3796,
-      "sha256": "f3ad9cc8a9ad68778d30a7f67e932710ffc5f9c326100071eb0d4cadf44fa70a",
-      "deployed_source_bytes_match": true
+      "authorized_invoice_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "authorized_amount_minor": 87400,
+      "authorize_tx": "0x9c9b980e81dcf5eced2eff9c64286253a1714508989bba31d1ca33932664ae4d",
+      "authorize_finality": "FINALIZED",
+      "readback": {
+        "beneficiary": "0x951e6B75530774fF82321a5ae54e14F778F0C855",
+        "covenant_id": 1,
+        "covenant_hash": "60aea77b4f55cbe9e3cef26472ecdd568f2e6f48ec2d518d0db5015b1e555f4c",
+        "amount_minor": 87400,
+        "currency": "USD"
+      },
+      "rejections": [
+        {
+          "case": "above_cap",
+          "tx": "0x3317d7e3965a42d4ed32aef9a29ee6ad53969c01fd277f16d2a03c5b83555b45",
+          "finality": "FINALIZED",
+          "execution": "CONTRACT_ERROR",
+          "reason": "GATE: invoice exceeds active parity quote or hash is stale"
+        },
+        {
+          "case": "replay",
+          "tx": "0x8ae310a08b2d3009f63f4582da7ce432fa7edf895744abe760a3cab7e229d4aa",
+          "finality": "FINALIZED",
+          "execution": "CONTRACT_ERROR",
+          "reason": "GATE: invoice already authorized"
+        },
+        {
+          "case": "wrong_beneficiary",
+          "tx": "0x94e95d1974fba74275ec4e2f2999fccb560fc3a844629c99c96cc55a141afbea",
+          "finality": "FINALIZED",
+          "execution": "CONTRACT_ERROR",
+          "reason": "GATE: only protected beneficiary can authorize"
+        },
+        {
+          "case": "malformed_hash",
+          "tx": "0xeab13df50a50d21764641f4b1ed97b4256e38d87d74ecc708c575b42452c0992",
+          "finality": "FINALIZED",
+          "execution": "CONTRACT_ERROR",
+          "reason": "GATE: covenant hash is invalid"
+        },
+        {
+          "case": "valid_format_stale_hash",
+          "tx": "0xce108e1c6f18c34ddb13ec526c19124b2f3e6cb5933561b6180bacbe2f51886c",
+          "finality": "FINALIZED",
+          "execution": "CONTRACT_ERROR",
+          "reason": "GATE: invoice exceeds active parity quote or hash is stale"
+        }
+      ]
     }
   },
-  "contracts": {
+  "historical_pre_http_status_fix": {
     "parity": {
       "address": "0xA34c2aB4A6b8ca81A44F9012260B16268B88C47A",
       "deployment_tx": "0xd07a4b2d5c421136bd7e4442158838f1d0aa4cbf5a69b18572c7acd196dff17b",
-      "finality": "FINALIZED",
-      "consensus": "MAJORITY_AGREE",
-      "execution": "SUCCESS"
+      "source_commit": "41fc1f17ff910028f6c17cae17120edd57b9169f",
+      "source_sha256": "3ec8ceca6b72d55ac727b00eaca350a980f08f05a5f0990bf0b74846f7553445"
     },
     "invoice_gate": {
       "address": "0x4F4c6702491832986Ec6b95aFbD3389d0E6e0251",
       "deployment_tx": "0xc9da13b2f36e83b24e1d3e36f76cf0cd74f98ff022a9498ee39857e2e8184d31",
-      "finality": "FINALIZED",
-      "consensus": "MAJORITY_AGREE",
-      "execution": "SUCCESS",
-      "bound_parity_readback": "0xA34c2aB4A6b8ca81A44F9012260B16268B88C47A"
-    }
-  },
-  "accounts": {
-    "beneficiary": "0x951e6B75530774fF82321a5ae54e14F778F0C855",
-    "provider": "0xB845a69860ba4CDf19CfDC5AfbAF2e20b6bE86b0",
-    "permissionless_submitter": "0x0d5540e0aD4B92Aa0ad4e5F1b8cD645ee1E363E7"
-  },
-  "covenant": {
-    "id": 1,
-    "proposal_tx": "0xaaec82ca61b0c9d178d07101aef50dff7c1eeaa2d7ed148724132ac9f140aa61",
-    "ratification_tx": "0xd58423bc90290dee265456bf554d072cf6114ca8815fe89e57dd1a278d1d12f2",
-    "proposal_finality": "FINALIZED",
-    "ratification_finality": "FINALIZED",
-    "status": "ACTIVE",
-    "definition_hash": "d2f8190db5fba97e3f313c643fc7ec13c7cfe6dc82c1230dd2433151901028f3",
-    "source_prefix": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/",
-    "original_total_minor": 123400,
-    "best_total_minor": 87400,
-    "best_offer_id": 1,
-    "quote_active": true
-  },
-  "offers": [
-    {
-      "id": 1,
-      "kind": "comparable_lower_price",
-      "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/offer-001-comparable.json",
-      "submit_tx": "0x5b285b2d92f716512414319a99d90de21c1ba9d6fff9db2d65416fd81ad87334",
-      "evaluate_tx": "0x6c58c30ed0a530f9fb19847810a285f052862008e0f06c4b7525216946c28e13",
-      "finality": "FINALIZED",
-      "consensus": "MAJORITY_AGREE",
-      "execution": "SUCCESS",
-      "status": "TRIGGERED",
-      "quoted_total_minor": 87400,
-      "source_digest": "8d12c0e597418427bccd12d31cd4631237cbf330a0c4002c4f141c9915e946c6",
-      "facets": {
-        "scope": "PASS",
-        "tier": "PASS",
-        "support": "PASS",
-        "territory": "PASS",
-        "exclusions": "PASS",
-        "audience": "PASS"
-      }
+      "source_sha256": "f3ad9cc8a9ad68778d30a7f67e932710ffc5f9c326100071eb0d4cadf44fa70a"
     },
-    {
-      "id": 2,
-      "kind": "more_expensive",
-      "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/offer-002-more-expensive.json",
-      "submit_tx": "0x897d11724157f4f5dece8acf1817fe9b7b2d01a541b6ca8b44a62a22ac229894",
-      "evaluate_tx": "0xb4f593c0ea2e53a57319436edeeb12a13214e7de954d7d311d963194aa68f11d",
-      "finality": "FINALIZED",
-      "consensus": "MAJORITY_AGREE",
-      "execution": "SUCCESS",
-      "status": "NOT_BETTER",
-      "quoted_total_minor": 147400,
-      "best_total_after_minor": 87400,
-      "source_digest": "41b3172c27c74dfde04dd806a1185dfdbbb086bf83986928c3e56fd4191c86e1",
-      "facets": {
-        "scope": "PASS",
-        "tier": "PASS",
-        "support": "PASS",
-        "territory": "PASS",
-        "exclusions": "PASS",
-        "audience": "PASS"
-      }
-    },
-    {
-      "id": 3,
-      "kind": "cheaper_weaker_support",
-      "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/offer-003-weaker-support.json",
-      "submit_tx": "0xf652f82391e9d11773b491ae81488fd2a8419e473918ce4f1ed374a71207e23c",
-      "evaluate_tx": "0xcb064e8a750e272f37b7f523952960cc6c6cc69afc1e0f3bc36a697058e61e0f",
-      "submit_finality": "FINALIZED",
-      "evaluation_finality": "FINALIZED",
-      "consensus": "MAJORITY_AGREE",
-      "execution": "SUCCESS",
-      "status": "NONCOMPARABLE",
-      "quoted_total_minor": 75400,
-      "facets": {
-        "scope": "PASS",
-        "tier": "PASS",
-        "support": "FAIL",
-        "territory": "PASS",
-        "exclusions": "PASS",
-        "audience": "PASS"
-      },
-      "reason": "Support is weaker: offer provides business-hours ticket response within two business days versus baseline 24/7 incident response within four hours.",
-      "source_digest": "263ff96389a30e854acc93a97ab13b2d4cc08c96e8a887b7256696930f4d693c",
-      "payload_digest": "78e97c9ec84d6f9cd66cf15cccc9866b58d79540b84de272a6f7cc16cc1126ef"
-    },
-    {
-      "id": 4,
-      "kind": "wrong_provider",
-      "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/offer-004-wrong-provider.json",
-      "submit_tx": "0x2d3291f8350e2cbeceadd1ba2265a43d8865b4281f7d357fe6a896933d68bde8",
-      "evaluate_tx": "0x20ec5e65cf2b2cfec93892e0b4e2d979e7cd638ee6b2be7a5eeb07e010315f05",
-      "finality": "FINALIZED",
-      "consensus": "MAJORITY_AGREE",
-      "execution": "SUCCESS",
-      "status": "INVALID_SOURCE",
-      "source_digest": "7b979193077b5b785bd4f7c97f3bd19d331bfcba02ddb0e7e189b0f6f01a2ae0",
-      "economic_effect": "NONE"
-    },
-    {
-      "id": 5,
-      "kind": "source_unavailable",
-      "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/does-not-exist.json",
-      "submit_tx": "0x63fa74c09ace21af98fd1aff9b8ce9135e2afd2562c3f8742293173619514580",
-      "submit_finality": "FINALIZED",
-      "evaluate_tx": "0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f",
-      "evaluation_finality": "FINALIZED",
-      "consensus": "MAJORITY_AGREE",
-      "execution": "SUCCESS",
-      "status": "INVALID_SOURCE",
-      "reason": "invalid source payload/price",
-      "source_digest": "ff77aaf150e3bfac85ebc425b95dd06b4595585982b44b0af790957f8d3dfad6",
-      "quoted_total_minor": 0,
-      "economic_effect": "NONE"
-    }
-  ],
-  "duplicate_offer": {
-    "tx": "0x063cccbf89d499345c51a1d96bf3dac28e83d5f0c80978d9bc8b1947df2f2179",
-    "finality": "FINALIZED",
-    "consensus": "MAJORITY_AGREE",
-    "execution": "CONTRACT_ERROR",
-    "reason": "PARITY: duplicate offer URL",
-    "state_effect": "NONE"
-  },
-  "invoice_gate": {
-    "authorized_invoice_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "authorized_amount_minor": 87400,
-    "authorize_tx": "0xd0b92a165dbcbfc11cd1070ddebdeb754679fbc1f157acb80680bc6838c2a1b3",
-    "authorize_finality": "FINALIZED",
-    "readback": {
-      "beneficiary": "0x951e6B75530774fF82321a5ae54e14F778F0C855",
-      "covenant_id": 1,
-      "covenant_hash": "d2f8190db5fba97e3f313c643fc7ec13c7cfe6dc82c1230dd2433151901028f3",
-      "amount_minor": 87400,
-      "currency": "USD"
-    },
-    "rejections": [
-      {
-        "case": "above_cap",
-        "tx": "0xcaf39227a3e6310a3b712412f8835d6357d7aae89bd2679845fa6dd378ef024d",
-        "finality": "FINALIZED",
-        "execution": "CONTRACT_ERROR",
-        "reason": "GATE: invoice exceeds active parity quote or hash is stale",
-        "was_authorized": false
-      },
-      {
-        "case": "replay",
-        "tx": "0x82fb1fe9d9232cadec792b11169d393a81c6e32573345a534caaffa1c0d33e6f",
-        "finality": "FINALIZED",
-        "execution": "CONTRACT_ERROR",
-        "reason": "GATE: invoice already authorized"
-      },
-      {
-        "case": "wrong_caller",
-        "tx": "0xec464a7c3b9bc40878d31181e729915e385049f1288f37a55a023469b89592b6",
-        "finality": "FINALIZED",
-        "execution": "CONTRACT_ERROR",
-        "reason": "GATE: only protected beneficiary can authorize",
-        "was_authorized": false
-      },
-      {
-        "case": "invalid_covenant_hash",
-        "tx": "0x3d509537989a17e20224f779f812145251effa50dea908475932d169d6abedf3",
-        "finality": "FINALIZED",
-        "execution": "CONTRACT_ERROR",
-        "reason": "GATE: covenant hash is invalid",
-        "was_authorized": false
-      }
-    ]
-  },
-  "limitations": [
-    "Fixture documents are repository-controlled test evidence, not independent provider-market proof.",
-    "Provider URL-prefix ratification is not cryptographic domain-ownership proof.",
-    "The repository-controlled missing-source fixture finalized as INVALID_SOURCE with no economic effect."
-  ]
+    "transactions": [
+      "0xaaec82ca61b0c9d178d07101aef50dff7c1eeaa2d7ed148724132ac9f140aa61",
+      "0xd58423bc90290dee265456bf554d072cf6114ca8815fe89e57dd1a278d1d12f2",
+      "0x5b285b2d92f716512414319a99d90de21c1ba9d6fff9db2d65416fd81ad87334",
+      "0x6c58c30ed0a530f9fb19847810a285f052862008e0f06c4b7525216946c28e13",
+      "0x897d11724157f4f5dece8acf1817fe9b7b2d01a541b6ca8b44a62a22ac229894",
+      "0xb4f593c0ea2e53a57319436edeeb12a13214e7de954d7d311d963194aa68f11d",
+      "0xf652f82391e9d11773b491ae81488fd2a8419e473918ce4f1ed374a71207e23c",
+      "0xcb064e8a750e272f37b7f523952960cc6c6cc69afc1e0f3bc36a697058e61e0f",
+      "0x2d3291f8350e2cbeceadd1ba2265a43d8865b4281f7d357fe6a896933d68bde8",
+      "0x20ec5e65cf2b2cfec93892e0b4e2d979e7cd638ee6b2bece7a5eeb07e010315f05",
+      "0x63fa74c09ace21af98fd1aff9b8ce9135e2afd2562c3f8742293173619514580",
+      "0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f",
+      "0x063cccbf89d499345c51a1d96bf3dac28e83d5f0c80978d9bc8b1947df2f2179",
+      "0xd0b92a165dbcbfc11cd1070ddebdeb754679fbc1f157acb80680bc6838c2a1b3",
+      "0xcaf39227a3e6310a3b712412f8835d6357d7aae89bd2679845fa6dd378ef024d",
+      "0x82fb1fe9d9232cadec792b11169d393a81c6e32573345a534caaffa1c0d33e6f",
+      "0xec464a7c3b9bc40878d31181e729915e385049f1288f37a55a023469b89592b6",
+      "0x3d509537989a17e20224f779f812145251effa50dea908475932d169d6abedf3"
+    ],
+    "note": "Historical hashes are retained for audit continuity and are not current deployment evidence."
+  }
 }

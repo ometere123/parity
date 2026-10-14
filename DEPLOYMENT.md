@@ -1,8 +1,11 @@
-# Parity — verified StudioNet deployment
+# Parity — StudioNet deployment and evidence
 
-This record contains only observed StudioNet 61999 results. `FINALIZED` below means the GenLayer transaction reached FINALIZED with a MAJORITY_AGREE result; contract-error transactions are recorded as rejected execution, not as successful state changes.
+This file separates the current deployments from the superseded deployment. A
+transaction is evidence of a successful state change only when its receipt is
+`FINALIZED`, its consensus result is `MAJORITY_AGREE`, its execution result is
+`SUCCESS`, and the canonical state readback confirms the expected result.
 
-## Network and toolchain
+## Current network and toolchain
 
 | Item | Value |
 |---|---|
@@ -15,69 +18,123 @@ This record contains only observed StudioNet 61999 results. `FINALIZED` below me
 | GenVM linter | `genvm-linter==0.11.0` |
 | Official test package | `genlayer-test==0.29.2` |
 
-The chain guard queried `eth_chainId` from the exact RPC and returned `0xF22F`. The local CLI package and executable both reported `0.39.1`.
+The repository preflight queried `eth_chainId` from the exact RPC and returned
+`0xF22F`. It also verified the repository-local CLI and both contract lint and
+semantic validation commands.
 
-## Deployed contracts
+## Final local verification
 
-The contract source commit is `41fc1f17ff910028f6c17cae17120edd57b9169f`. Later commits changed fixtures and documentation only; the deployed contract files remain byte-identical to that source commit.
+- Offline suite: 66 passed.
+- Official Direct Mode suite: 12 passed.
+- Security mutation suite: 12/12 critical mutants killed.
+- Parity AST lint: 3/3; InvoiceGate AST lint: 3/3.
+- Parity and InvoiceGate GenVM v0.2.12 semantic validation: passed.
+- Python compilation: passed.
+- Repository-local CLI and live chain guard: 0.39.1 and chain 61999.
 
-| Contract | Address | Deployment transaction | Finality/result | Source bytes | SHA-256 |
-|---|---|---|---|---:|---|
-| Parity | [`0xA34c2aB4A6b8ca81A44F9012260B16268B88C47A`](https://explorer-studio.genlayer.com/address/0xA34c2aB4A6b8ca81A44F9012260B16268B88C47A) | [`0xd07a4b2d5c421136bd7e4442158838f1d0aa4cbf5a69b18572c7acd196dff17b`](https://explorer-studio.genlayer.com/tx/0xd07a4b2d5c421136bd7e4442158838f1d0aa4cbf5a69b18572c7acd196dff17b) | FINALIZED / MAJORITY_AGREE / SUCCESS | 29349 | `3ec8ceca6b72d55ac727b00eaca350a980f08f05a5f0990bf0b74846f7553445` |
-| ParityInvoiceGate | [`0x4F4c6702491832986Ec6b95aFbD3389d0E6e0251`](https://explorer-studio.genlayer.com/address/0x4F4c6702491832986Ec6b95aFbD3389d0E6e0251) | [`0xc9da13b2f36e83b24e1d3e36f76cf0cd74f98ff022a9498ee39857e2e8184d31`](https://explorer-studio.genlayer.com/tx/0xc9da13b2f36e83b24e1d3e36f76cf0cd74f98ff022a9498ee39857e2e8184d31) | FINALIZED / MAJORITY_AGREE / SUCCESS | 3796 | `f3ad9cc8a9ad68778d30a7f67e932710ffc5f9c326100071eb0d4cadf44fa70a` |
+## Current deployments
 
-Retrieved contract source from the RPC matched the local files byte-for-byte. `get_parity_address()` on the deployed InvoiceGate returned the exact Parity address above.
+The current Parity deployment contains the HTTP-response-status guard. The
+current InvoiceGate deployment contains the GenVM-compatible constructor
+address normalization and is bound to the current Parity address.
 
-## Covenant and offer lifecycle
+| Contract | Address | Deployment transaction | Finality/result | Deployment source commit | Git source SHA-256 / bytes |
+|---|---|---|---|---|---|
+| Parity | [`0xda1BAE7241c7595893e3AE85952AD91588653B33`](https://explorer-studio.genlayer.com/address/0xda1BAE7241c7595893e3AE85952AD91588653B33) | [`0xc6e109402af4a295ac5c2aa247ba7058273030743c66714a88b6476c30da0327`](https://explorer-studio.genlayer.com/tx/0xc6e109402af4a295ac5c2aa247ba7058273030743c66714a88b6476c30da0327) | FINALIZED / MAJORITY_AGREE / SUCCESS | `c6c84d48077680d3fc6936542c73d08b96c3fd64` | `B41909870003925A23A754FE2DF1A1B92EB557A97CC314A99347D7E54BBBBDDA` / 29221 LF bytes |
+| ParityInvoiceGate | [`0x0Fe103558b5990a2254aB711b8bf080AA3D980F0`](https://explorer-studio.genlayer.com/address/0x0Fe103558b5990a2254aB711b8bf080AA3D980F0) | [`0xab52a709b366456aa54e325316e3ef4f47dc0d67d789ed4db56158c17a3ca68d`](https://explorer-studio.genlayer.com/tx/0xab52a709b366456aa54e325316e3ef4f47dc0d67d789ed4db56158c17a3ca68d) | FINALIZED / MAJORITY_AGREE / SUCCESS | `bbea164a12262a7d1408e62079c100a3d00bcebd` | `6AC2D5726BFF83D17808FC05190C6FFD87DE8B5781F68E679EF822A62FE20232` / 4463 LF bytes |
 
-The live fixture prefix was ratified after covenant creation:
+The stable CLI `code` readback matched the deployed source content after the
+CLI's omitted terminal newline was restored. The RPC retrieval hashes without
+that terminal newline are Parity
+`2B99DADE7DD2C431DC19B31ABB244441AB6F804F8BC441E7F10AA10327191FFB`
+(29220 bytes) and InvoiceGate
+`DDC8EF0FF16B3A23C7B2EF629857CC530FFE33AD541522F6A771249539775B53`
+(4462 bytes). The Windows worktree hashes are line-ending dependent; the Git
+content hashes above are the stable source-parity identifiers.
+
+`get_parity_address()` on the current InvoiceGate returned exactly
+`0xda1BAE7241c7595893e3AE85952AD91588653B33`.
+
+## Current live covenant and offer evidence
+
+Public test accounts, recorded by address only:
+
+- beneficiary (`walletA`): `0x951e6B75530774fF82321a5ae54e14F778F0C855`
+- named provider (`walletB`): `0xB845a69860ba4CDf19CfDC5AfbAF2e20b6bE86b0`
+- permissionless submitter/evaluator (`praest-deployer`): `0x0d5540e0aD4B92Aa0ad4e5F1b8cD645ee1E363E7`
+
+The current covenant uses USD minor units, quantity `100`, term `12`, unit
+price `100`, setup `1000`, recurring `200`, and original total `123400`.
+Its source prefix is:
 
 `https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/`
 
-Wallets are public test accounts only:
-
-- beneficiary: `0x951e6B75530774fF82321a5ae54e14F778F0C855` (`walletA`)
-- named provider: `0xB845a69860ba4CDf19CfDC5AfbAF2e20b6bE86b0` (`walletB`)
-- permissionless submitter/evaluator: `0x0d5540e0aD4B92Aa0ad4e5F1b8cD645ee1E363E7` (`praest-deployer`)
-
-| Action | Transaction | Finality/result | Readback |
+| Action | Transaction | Finality/result | Canonical readback |
 |---|---|---|---|
-| `propose_covenant` | [`0xaaec82ca61b0c9d178d07101aef50dff7c1eeaa2d7ed148724132ac9f140aa61`](https://explorer-studio.genlayer.com/tx/0xaaec82ca61b0c9d178d07101aef50dff7c1eeaa2d7ed148724132ac9f140aa61) | FINALIZED / MAJORITY_AGREE / SUCCESS | covenant `1`, DRAFT |
-| `ratify(1)` | [`0xd58423bc90290dee265456bf554d072cf6114ca8815fe89e57dd1a278d1d12f2`](https://explorer-studio.genlayer.com/tx/0xd58423bc90290dee265456bf554d072cf6114ca8815fe89e57dd1a278d1d12f2) | FINALIZED / MAJORITY_AGREE / SUCCESS | ACTIVE; definition hash `d2f8190db5fba97e3f313c643fc7ec13c7cfe6dc82c1230dd2433151901028f3` |
-| submit comparable offer 1 | [`0x5b285b2d92f716512414319a99d90de21c1ba9d6fff9db2d65416fd81ad87334`](https://explorer-studio.genlayer.com/tx/0x5b285b2d92f716512414319a99d90de21c1ba9d6fff9db2d65416fd81ad87334) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `1` |
-| evaluate offer 1 | [`0x6c58c30ed0a530f9fb19847810a285f052862008e0f06c4b7525216946c28e13`](https://explorer-studio.genlayer.com/tx/0x6c58c30ed0a530f9fb19847810a285f052862008e0f06c4b7525216946c28e13) | FINALIZED / MAJORITY_AGREE / SUCCESS | TRIGGERED; all six facets PASS; total `123400 → 87400` |
-| submit more-expensive offer 2 | [`0x897d11724157f4f5dece8acf1817fe9b7b2d01a541b6ca8b44a62a22ac229894`](https://explorer-studio.genlayer.com/tx/0x897d11724157f4f5dece8acf1817fe9b7b2d01a541b6ca8b44a62a22ac229894) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `2` |
-| evaluate offer 2 | [`0xb4f593c0ea2e53a57319436edeeb12a13214e7de954d7d311d963194aa68f11d`](https://explorer-studio.genlayer.com/tx/0xb4f593c0ea2e53a57319436edeeb12a13214e7de954d7d311d963194aa68f11d) | FINALIZED / MAJORITY_AGREE / SUCCESS | NOT_BETTER; quoted `147400`; best remains `87400` |
-| submit weaker-support offer 3 | [`0xf652f82391e9d11773b491ae81488fd2a8419e473918ce4f1ed374a71207e23c`](https://explorer-studio.genlayer.com/tx/0xf652f82391e9d11773b491ae81488fd2a8419e473918ce4f1ed374a71207e23c) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `3` |
-| evaluate offer 3 | [`0xcb064e8a750e272f37b7f523952960cc6c6cc69afc1e0f3bc36a697058e61e0f`](https://explorer-studio.genlayer.com/tx/0xcb064e8a750e272f37b7f523952960cc6c6cc69afc1e0f3bc36a697058e61e0f) | FINALIZED / MAJORITY_AGREE / SUCCESS | NONCOMPARABLE; `support=FAIL`, quoted `75400`; no economic effect |
-| submit wrong-provider offer 4 | [`0x2d3291f8350e2cbeceadd1ba2265a43d8865b4281f7d357fe6a896933d68bde8`](https://explorer-studio.genlayer.com/tx/0x2d3291f8350e2cbeceadd1ba2265a43d8865b4281f7d357fe6a896933d68bde8) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `4` |
-| evaluate offer 4 | [`0x20ec5e65cf2b2cfec93892e0b4e2d979e7cd638ee6b2be7a5eeb07e010315f05`](https://explorer-studio.genlayer.com/tx/0x20ec5e65cf2b2cfec93892e0b4e2d979e7cd638ee6b2be7a5eeb07e010315f05) | FINALIZED / MAJORITY_AGREE / SUCCESS | INVALID_SOURCE; no economic effect |
-| submit missing-source offer 5 | [`0x63fa74c09ace21af98fd1aff9b8ce9135e2afd2562c3f8742293173619514580`](https://explorer-studio.genlayer.com/tx/0x63fa74c09ace21af98fd1aff9b8ce9135e2afd2562c3f8742293173619514580) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `5` |
-| evaluate missing-source offer 5 | [`0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f`](https://explorer-studio.genlayer.com/tx/0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f) | FINALIZED / MAJORITY_AGREE / SUCCESS | INVALID_SOURCE; `invalid source payload/price`; quoted `0`; no economic effect |
-| duplicate offer 1 URL | [`0x063cccbf89d499345c51a1d96bf3dac28e83d5f0c80978d9bc8b1947df2f2179`](https://explorer-studio.genlayer.com/tx/0x063cccbf89d499345c51a1d96bf3dac28e83d5f0c80978d9bc8b1947df2f2179) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `PARITY: duplicate offer URL`; no new offer |
+| `propose_covenant` | [`0x6d857a073359e649f2477414b1d8028e46c681752ce42df069363870caa95dcf`](https://explorer-studio.genlayer.com/tx/0x6d857a073359e649f2477414b1d8028e46c681752ce42df069363870caa95dcf) | FINALIZED / MAJORITY_AGREE / SUCCESS | covenant `1`, DRAFT |
+| `ratify(1)` | [`0x709b46869bdb27a4c07137cfe5a9bce575535d84e71673b7172d76a879424101`](https://explorer-studio.genlayer.com/tx/0x709b46869bdb27a4c07137cfe5a9bce575535d84e71673b7172d76a879424101) | FINALIZED / MAJORITY_AGREE / SUCCESS | ACTIVE; definition hash `60aea77b4f55cbe9e3cef26472ecdd568f2e6f48ec2d518d0db5015b1e555f4c` |
+| submit comparable offer `parity-final-comparable-007` | [`0xa10e53794220bb7f4de80693c489255ab7841e9209c53eab5685e733f14cc08e`](https://explorer-studio.genlayer.com/tx/0xa10e53794220bb7f4de80693c489255ab7841e9209c53eab5685e733f14cc08e) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `3` |
+| evaluate offer `3` | [`0x9b46e26961aff612f640a8c89c9c924f69911ef07e45eec45d41122929f9d5c5`](https://explorer-studio.genlayer.com/tx/0x9b46e26961aff612f640a8c89c9c924f69911ef07e45eec45d41122929f9d5c5) | FINALIZED / MAJORITY_AGREE / SUCCESS | `TRIGGERED`; all six facets `PASS`; `123400 → 87400` |
+| submit more-expensive offer `parity-final-more-expensive-008` | [`0x057a061cc2c43024fdfe7dbe102b7b508c8759a11ab3e1666da2e7fabd739a85`](https://explorer-studio.genlayer.com/tx/0x057a061cc2c43024fdfe7dbe102b7b508c8759a11ab3e1666da2e7fabd739a85) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `4` |
+| evaluate offer `4` | [`0x76d4350928f36fddf554266b0f4ed0bc987c26a81f75147f8ee9945629ea8736`](https://explorer-studio.genlayer.com/tx/0x76d4350928f36fddf554266b0f4ed0bc987c26a81f75147f8ee9945629ea8736) | FINALIZED / MAJORITY_AGREE / SUCCESS | `NOT_BETTER`; quoted `147400`; cap remains `87400` |
+| submit weaker-support offer `parity-final-weaker-support-009` | [`0xea1d6f7c7b0b9583ddeae908d5630b9a0a5601bdb5632b5e01f7d9509cc7332b`](https://explorer-studio.genlayer.com/tx/0xea1d6f7c7b0b9583ddeae908d5630b9a0a5601bdb5632b5e01f7d9509cc7332b) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `5` |
+| evaluate offer `5` | [`0xe64b6f48af1cd1568fe659fa7ae1fcf292c36fac4ec7cff40909c3875e173fe6`](https://explorer-studio.genlayer.com/tx/0xe64b6f48af1cd1568fe659fa7ae1fcf292c36fac4ec7cff40909c3875e173fe6) | FINALIZED / MAJORITY_AGREE / SUCCESS | `NONCOMPARABLE`; `support=FAIL`; quoted `75400`; no cap effect |
 
-Final `get_covenant(1)` readback was ACTIVE, `best_offer_id=1`, `original_total=123400`, `best_total=87400`, and `offer_count=5`. `quote(1)` returned `active=true`, `effective_total=87400` and the same definition hash.
+The final `get_covenant(1)` readback is ACTIVE with `best_offer_id=3`,
+`best_total=87400`, `original_total=123400`, and `offer_count=5`.
+The final offer `3` source digest is
+`0849983919102537eecbc5bb408c8cdb6d30e45626dda1090b80c48653cbca15`.
+Offer `4` source digest is
+`6e003ba89cc5305d4aa99439dc499d567e1b170900212446c9cf4cef2459710e`.
+Offer `5` source digest is
+`9a77f2cfe1f6d5ba4a63ae5767d78421aaf1b747990e004984d0ee58acf2ad5d`.
 
-The missing-source fixture finalized as offer `5`. Its evaluation transaction [`0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f`](https://explorer-studio.genlayer.com/tx/0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f) finalized `INVALID_SOURCE` with reason `invalid source payload/price`, quoted total `0`, and no economic effect.
+An earlier final-deployment submission of the cached, pre-correction offer-004
+fixture evaluated as `UNCERTAIN` and did not change the cap. It is not used as
+the comparable proof; the uniquely addressed offer-007 fixture is the current
+positive evidence.
 
-## InvoiceGate cross-contract evidence
+## Current InvoiceGate evidence
 
-The successful at-cap authorization used invoice hash `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` and amount `87400`. `get_authorization` returned beneficiary walletA, covenant `1`, the live definition hash, amount `87400`, and currency USD.
+The authorized invoice hash is
+`aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`.
 
 | Attempt | Transaction | Finality/result | Readback |
 |---|---|---|---|
-| authorize at cap | [`0xd0b92a165dbcbfc11cd1070ddebdeb754679fbc1f157acb80680bc6838c2a1b3`](https://explorer-studio.genlayer.com/tx/0xd0b92a165dbcbfc11cd1070ddeb754679fbc1f157acb80680bc6838c2a1b3) | FINALIZED / MAJORITY_AGREE / SUCCESS | authorized; amount `87400` |
-| authorize above cap `87401` | [`0xcaf39227a3e6310a3b712412f8835d6357d7aae89bd2679845fa6dd378ef024d`](https://explorer-studio.genlayer.com/tx/0xcaf39227a3e6310a3b712412f8835d6357d7aae89bd2679845fa6dd378ef024d) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: invoice exceeds active parity quote or hash is stale`; `was_authorized` false |
-| replay same invoice hash | [`0x82fb1fe9d9232cadec792b11169d393a81c6e32573345a534caaffa1c0d33e6f`](https://explorer-studio.genlayer.com/tx/0x82fb1fe9d9232cadec792b11169d393a81c6e32573345a534caaffa1c0d33e6f) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: invoice already authorized` |
-| wrong caller walletB | [`0xec464a7c3b9bc40878d31181e729915e385049f1288f37a55a023469b89592b6`](https://explorer-studio.genlayer.com/tx/0xec464a7c3b9bc40878d31181e729915e385049f1288f37a55a023469b89592b6) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: only protected beneficiary can authorize`; `was_authorized` false |
-| wrong definition hash | [`0x3d509537989a17e20224f779f812145251effa50dea908475932d169d6abedf3`](https://explorer-studio.genlayer.com/tx/0x3d509537989a17e20224f779f812145251effa50dea908475932d169d6abedf3) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: covenant hash is invalid`; `was_authorized` false |
+| authorize at cap `87400` | [`0x9c9b980e81dcf5eced2eff9c64286253a1714508989bba31d1ca33932664ae4d`](https://explorer-studio.genlayer.com/tx/0x9c9b980e81dcf5eced2eff9c64286253a1714508989bba31d1ca33932664ae4d) | FINALIZED / MAJORITY_AGREE / SUCCESS | `was_authorized=true`; beneficiary walletA; amount `87400`; currency USD |
+| above cap `87401` | [`0x3317d7e3965a42d4ed32aef9a29ee6ad53969c01fd277f16d2a03c5b83555b45`](https://explorer-studio.genlayer.com/tx/0x3317d7e3965a42d4ed32aef9a29ee6ad53969c01fd277f16d2a03c5b83555b45) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: invoice exceeds active parity quote or hash is stale` |
+| replay | [`0x8ae310a08b2d3009f63f4582da7ce432fa7edf895744abe760a3cab7e229d4aa`](https://explorer-studio.genlayer.com/tx/0x8ae310a08b2d3009f63f4582da7ce432fa7edf895744abe760a3cab7e229d4aa) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: invoice already authorized` |
+| wrong caller walletB | [`0x94e95d1974fba74275ec4e2f2999fccb560fc3a844629c99c96cc55a141afbea`](https://explorer-studio.genlayer.com/tx/0x94e95d1974fba74275ec4e2f2999fccb560fc3a844629c99c96cc55a141afbea) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: only protected beneficiary can authorize` |
+| malformed all-zero hash | [`0xeab13df50a50d21764641f4b1ed97b4256e38d87d74ecc708c575b42452c0992`](https://explorer-studio.genlayer.com/tx/0xeab13df50a50d21764641f4b1ed97b4256e38d87d74ecc708c575b42452c0992) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: covenant hash is invalid` |
+| valid-format stale hash | [`0xce108e1c6f18c34ddb13ec526c19124b2f3e6cb5933561b6180bacbe2f51886c`](https://explorer-studio.genlayer.com/tx/0xce108e1c6f18c34ddb13ec5261b6180bacbe2f51886c) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `GATE: invoice exceeds active parity quote or hash is stale` |
 
-InvoiceGate does not transfer GEN. It records a beneficiary-authorized invoice only when the current Parity quote and immutable covenant hash permit it.
+`get_parity_address()` returned the exact current Parity address, and
+`get_authorization()` returned covenant `1`, the current definition hash,
+amount `87400`, beneficiary walletA and currency USD. InvoiceGate does not
+transfer GEN; it records a beneficiary-authorized invoice only when the
+current Parity quote and immutable covenant hash permit it.
 
-## Limitations and non-final attempts
+## Superseded deployment and historical evidence
 
-- The fixture documents are controlled by this repository. They demonstrate the protocol, not independent provider-market adoption.
-- Provider ratification binds a wallet to a URL prefix; it is not cryptographic proof of domain ownership.
+The following deployment predates the HTTP-status correction and is not current
+evidence:
+
+| Contract | Address | Deployment transaction | Source commit | Source SHA-256 |
+|---|---|---|---|---|
+| Parity | `0xA34c2aB4A6b8ca81A44F9012260B16268B88C47A` | `0xd07a4b2d5c421136bd7e4442158838f1d0aa4cbf5a69b18572c7acd196dff17b` | `41fc1f17ff910028f6c17cae17120edd57b9169f` | `3ec8ceca6b72d55ac727b00eaca350a980f08f05a5f0990bf0b74846f7553445` |
+| InvoiceGate | `0x4F4c6702491832986Ec6b95aFbD3389d0E6e0251` | `0xc9da13b2f36e83b24e1d3e36f76cf0cd74f98ff022a9498ee39857e2e8184d31` | `41fc1f17ff910028f6c17cae17120edd57b9169f` | `f3ad9cc8a9ad68778d30a7f67e932710ffc5f9c326100071eb0d4cadf44fa70a` |
+
+Historical covenant/evaluation and Gate transactions remain available in the
+repository history and were not relabeled as current. The older comparable,
+higher-price, weaker-support, wrong-provider, missing-source, duplicate and
+InvoiceGate transaction hashes are retained in the earlier deployment record
+for audit continuity.
+
+## Limitations and failed attempts
+
+- Repository-controlled fixture documents demonstrate the protocol but are not independent commercial-market proof.
+- Provider ratification binds a wallet to a URL prefix; it is not cryptographic proof of DNS or GitHub ownership.
+- `published_at` is source-declared, not an independently attested publication timestamp.
 - Parity does not discover every offer, charge customers, escrow funds or refund invoices.
-- The malformed first deployment attempt (`0xfcdc6d5a0e955c0dbf4ecd612ae78b3525dadabeda8e367ae0a036540c115d23`) finalized with `invalid_contract` and is excluded from current deployment evidence.
-- The missing-source evaluation finalized as `INVALID_SOURCE`; it did not change the quote.
+- A valid HTTP status authenticates transport success, not the truth of provider statements. Missing, malformed, non-2xx and network-failure responses cannot trigger a cap change.
+- The first malformed final Gate deployment attempts finalized with contract errors and are excluded from current deployment evidence; only the deployment above is bound to current Parity.

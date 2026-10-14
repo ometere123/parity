@@ -48,7 +48,7 @@ Beneficiary creates DRAFT covenant -- frozen baseline & provider-approved source
 
 1. **Bilateral consent:** The buyer authors a frozen initial covenant; only its named supplier may activate it.
 2. **Source authority is narrow:** HTTPS, public DNS, mandatory ratified *non-root path prefix*, no URL credentials/port/query/fragment/traversal. Shared hosts must pin `/owner/repo/...`, not just `raw.githubusercontent.com`.
-3. **Source bytes are independently reproduced:** validators independently fetch, hash and re-parse the public payload. A single LLM result is not proof of origin or availability.
+3. **Source bytes are independently reproduced:** validators independently fetch, hash and re-parse the public payload. A response is eligible only when the pinned runtime reports an integer HTTP status in the successful 2xx range; missing, malformed, redirect, 4xx, 5xx and network-failure responses cannot qualify as public evidence. A single LLM result is not proof of origin or availability.
 4. **Economic truth is deterministic:** quantity, exact currency, integer price and fees, published/valid windows and term/volume coverage are validated in Python; no LLM arithmetic or price suggestion.
 5. **Material validator agreement:** exact agreement across six semantic facet states, payload digest, downloaded bytes digest and calculated total. A merely shape-valid output fails.
 6. **Uncertain or stale evidence is not a discount:** any FAIL or UNCERTAIN facet cannot trigger; source fetch failures have bounded retries.
@@ -115,16 +115,16 @@ Current network reference: [GenLayer Networks](https://docs.genlayer.com/develop
 
 ## Verified development and StudioNet proof
 
-The current verification run recorded:
+The final local verification run recorded:
 
-- `57` offline Python tests (`python -m pytest tests -q`);
-- `8` official Direct Mode tests (`python -m pytest tests/direct -q`);
+- `66` offline Python tests (`python -m pytest tests -q`);
+- `12` official Direct Mode tests (`python -m pytest tests/direct -q`);
 - `12/12` security-critical mutation checks killed;
 - GenVM lint: `3/3` checks passed for each contract;
 - GenVM semantic validation passed for both contracts;
 - repository-local CLI `genlayer@0.39.1` and Python `genvm-linter==0.11.0`, `genlayer-test==0.29.2`.
 
-The final contracts are deployed on stable StudioNet (`61999`) and their retrieved source bytes match the committed contract files exactly. A live covenant, provider ratification, comparable lower offer, non-triggering/invalid offer records and InvoiceGate authorization/rejection paths are recorded in [`DEPLOYMENT.md`](DEPLOYMENT.md), [`SUBMISSION.md`](SUBMISSION.md) and [`artifacts/studionet_proof.json`](artifacts/studionet_proof.json).
+The current contracts are deployed on stable StudioNet (`61999`) at Parity `0xda1BAE7241c7595893e3AE85952AD91588653B33` and InvoiceGate `0x0Fe103558b5990a2254aB711b8bf080AA3D980F0`. Stable CLI source retrieval matches the deployed source content after accounting for terminal-newline and Windows line-ending representation. A live covenant, provider ratification, comparable lower offer, non-triggering/invalid offer records and InvoiceGate authorization/rejection paths are recorded in [`DEPLOYMENT.md`](DEPLOYMENT.md), [`SUBMISSION.md`](SUBMISSION.md) and [`artifacts/studionet_proof.json`](artifacts/studionet_proof.json).
 
 The live offer documents are repository-controlled fixtures for reproducible protocol evidence; they are not independent proof of third-party pricing or complete market discovery. The weaker-support fixture finalized as `NONCOMPARABLE` with `support=FAIL` and no price effect. The missing-source fixture finalized as `INVALID_SOURCE` with no price effect.
 
