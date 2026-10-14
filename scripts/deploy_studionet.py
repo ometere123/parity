@@ -11,7 +11,9 @@ import sys
 import os
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-CLI = ["npm","exec","--no","--","genlayer"] if os.name=="nt" else [str(ROOT/"node_modules"/".bin"/"genlayer")]
+# Windows subprocess requires the command shim explicitly; using npm.cmd
+# still resolves the repository-local package declared in package.json.
+CLI = ["npm.cmd","exec","--no","--","genlayer"] if os.name=="nt" else [str(ROOT/"node_modules"/".bin"/"genlayer")]
 
 
 def run(args: list[str]):
