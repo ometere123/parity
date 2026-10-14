@@ -32,6 +32,12 @@ class ParityInvoiceGate(gl.Contract):
     authorized_count: u256
 
     def __init__(self, parity_address: Address):
+        # The CLI/runtime may deliver constructor addresses as strings even
+        # when the annotated argument is Address.  Normalize before writing
+        # the typed storage slot; storing the raw string is a finalized
+        # deployment-time contract error in GenVM v0.2.12.
+        if not isinstance(parity_address, Address):
+            parity_address = Address(parity_address)
         self.parity_address=parity_address
         self.authorized_count=u256(0)
 
