@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+.vscode/
+.DS_Store
+coverage/
+.pyright/

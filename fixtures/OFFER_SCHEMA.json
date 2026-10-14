@@ -1,0 +1,23 @@
+{
+  "offer_id": "provider-public-offer-001",
+  "provider_key": "provider-inc",
+  "currency": "USD",
+  "scope": "100 units of hosted project backups including full restores",
+  "tier": "business",
+  "support": "24/7 incident response within four hours",
+  "territory": "Nigeria",
+  "exclusions": "no additional restrictions beyond stated service maintenance windows",
+  "audience": "all existing customers of business tier",
+  "billing_period": "monthly",
+  "unit_price_minor": 70,
+  "setup_fee_minor": 1000,
+  "recurring_fee_minor": 200,
+  "min_quantity": 1,
+  "max_quantity": 1000,
+  "min_term_months": 1,
+  "max_term_months": 24,
+  "published_at": 0,
+  "valid_from": 0,
+  "valid_until": 0,
+  "public_offer": true
+}

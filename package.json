@@ -1,0 +1,14 @@
+{
+  "name": "parity-genlayer-primitive",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Contract-only GenLayer Studionet semantic most-favoured-terms primitive",
+  "scripts": {
+    "cli:version": "genlayer --version",
+    "network": "genlayer network info",
+    "deploy:studionet": "python scripts/deploy_studionet.py"
+  },
+  "devDependencies": {
+    "genlayer": "0.39.1"
+  }
+}
