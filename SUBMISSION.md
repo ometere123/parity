@@ -35,7 +35,7 @@ The completed local run recorded:
 
 Wallet A proposed covenant `1` using USD minor units, quantity `100`, term `12`, unit `100`, setup `1000`, recurring `200`, and total `123400`. Wallet B ratified it. The comparable public fixture reduced the finalized quote to `87400`; `get_covenant(1)` and `quote(1)` read back `best_offer_id=1`, `best_total=87400`, `active=true`.
 
-The same deployment also has finalized readbacks for a higher-price `NOT_BETTER` offer, a cheaper but weaker-support `NONCOMPARABLE` offer (`support=FAIL`, no economic effect), and an `INVALID_SOURCE` wrong-provider offer. A missing-source evaluation remains COMMITTING and pending; it is not claimed as finalized source-unavailability evidence. These limits are stated explicitly in `DEPLOYMENT.md`.
+The same deployment also has finalized readbacks for a higher-price `NOT_BETTER` offer, a cheaper but weaker-support `NONCOMPARABLE` offer (`support=FAIL`, no economic effect), an `INVALID_SOURCE` wrong-provider offer, and the missing-source offer (`INVALID_SOURCE`, no economic effect). These limits are stated explicitly in `DEPLOYMENT.md`.
 
 ## Cross-contract proof
 
@@ -45,4 +45,4 @@ The deployed InvoiceGate authorized one invoice at the exact current cap (`87400
 
 Use the commands in [`docs/LIVE_STUDIONET_RUNBOOK.md`](docs/LIVE_STUDIONET_RUNBOOK.md). Do not treat an ACCEPTED receipt as final: wait for `FINALIZED`, check `MAJORITY_AGREE`, check execution success, and then read canonical state. The raw fixture files under [`fixtures/live`](fixtures/live) are repository-controlled test evidence rather than independent commercial-market evidence.
 
-Remaining limitations are not hidden: provider ratification is not domain-ownership proof; the protocol cannot prove catalogue completeness or undisclosed terms; HTTP/public-source availability can change; and the source-unavailable live evaluation did not reach a final terminal readback in this run.
+Remaining limitations are not hidden: provider ratification is not domain-ownership proof; the protocol cannot prove catalogue completeness or undisclosed terms; and HTTP/public-source availability can change.

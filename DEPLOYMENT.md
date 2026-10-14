@@ -52,11 +52,13 @@ Wallets are public test accounts only:
 | evaluate offer 3 | [`0xcb064e8a750e272f37b7f523952960cc6c6cc69afc1e0f3bc36a697058e61e0f`](https://explorer-studio.genlayer.com/tx/0xcb064e8a750e272f37b7f523952960cc6c6cc69afc1e0f3bc36a697058e61e0f) | FINALIZED / MAJORITY_AGREE / SUCCESS | NONCOMPARABLE; `support=FAIL`, quoted `75400`; no economic effect |
 | submit wrong-provider offer 4 | [`0x2d3291f8350e2cbeceadd1ba2265a43d8865b4281f7d357fe6a896933d68bde8`](https://explorer-studio.genlayer.com/tx/0x2d3291f8350e2cbeceadd1ba2265a43d8865b4281f7d357fe6a896933d68bde8) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `4` |
 | evaluate offer 4 | [`0x20ec5e65cf2b2cfec93892e0b4e2d979e7cd638ee6b2be7a5eeb07e010315f05`](https://explorer-studio.genlayer.com/tx/0x20ec5e65cf2b2cfec93892e0b4e2d979e7cd638ee6b2be7a5eeb07e010315f05) | FINALIZED / MAJORITY_AGREE / SUCCESS | INVALID_SOURCE; no economic effect |
+| submit missing-source offer 5 | [`0x63fa74c09ace21af98fd1aff9b8ce9135e2afd2562c3f8742293173619514580`](https://explorer-studio.genlayer.com/tx/0x63fa74c09ace21af98fd1aff9b8ce9135e2afd2562c3f8742293173619514580) | FINALIZED / MAJORITY_AGREE / SUCCESS | offer `5` |
+| evaluate missing-source offer 5 | [`0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f`](https://explorer-studio.genlayer.com/tx/0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f) | FINALIZED / MAJORITY_AGREE / SUCCESS | INVALID_SOURCE; `invalid source payload/price`; quoted `0`; no economic effect |
 | duplicate offer 1 URL | [`0x063cccbf89d499345c51a1d96bf3dac28e83d5f0c80978d9bc8b1947df2f2179`](https://explorer-studio.genlayer.com/tx/0x063cccbf89d499345c51a1d96bf3dac28e83d5f0c80978d9bc8b1947df2f2179) | FINALIZED / MAJORITY_AGREE / CONTRACT_ERROR | `PARITY: duplicate offer URL`; no new offer |
 
 Final `get_covenant(1)` readback was ACTIVE, `best_offer_id=1`, `original_total=123400`, `best_total=87400`, and `offer_count=5`. `quote(1)` returned `active=true`, `effective_total=87400` and the same definition hash.
 
-The source-unavailable fixture submission finalized as offer `5` and remained PENDING. Its evaluation transaction [`0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f`](https://explorer-studio.genlayer.com/tx/0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f) remained `COMMITTING`; the CLI wait timed out and it is not presented as finalized source-unavailability evidence.
+The missing-source fixture finalized as offer `5`. Its evaluation transaction [`0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f`](https://explorer-studio.genlayer.com/tx/0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f) finalized `INVALID_SOURCE` with reason `invalid source payload/price`, quoted total `0`, and no economic effect.
 
 ## InvoiceGate cross-contract evidence
 
@@ -78,4 +80,4 @@ InvoiceGate does not transfer GEN. It records a beneficiary-authorized invoice o
 - Provider ratification binds a wallet to a URL prefix; it is not cryptographic proof of domain ownership.
 - Parity does not discover every offer, charge customers, escrow funds or refund invoices.
 - The malformed first deployment attempt (`0xfcdc6d5a0e955c0dbf4ecd612ae78b3525dadabeda8e367ae0a036540c115d23`) finalized with `invalid_contract` and is excluded from current deployment evidence.
-- The source-unavailable evaluation above remains pending/non-final. No fabricated finalized result is recorded.
+- The missing-source evaluation finalized as `INVALID_SOURCE`; it did not change the quote.

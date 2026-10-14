@@ -147,11 +147,15 @@
       "url": "https://raw.githubusercontent.com/ometere123/parity/main/fixtures/live/does-not-exist.json",
       "submit_tx": "0x63fa74c09ace21af98fd1aff9b8ce9135e2afd2562c3f8742293173619514580",
       "submit_finality": "FINALIZED",
-      "status": "PENDING",
       "evaluate_tx": "0xce94f1cea08c67c8c931eb31e2b37f1cb272080fbfff3bfc3a3f2e26d1cdd08f",
-      "evaluation_status": "COMMITTING",
-      "evaluation_finality": "NOT_FINALIZED",
-      "note": "The CLI wait timed out while the evaluation remained COMMITTING; no source-unavailable final outcome is claimed."
+      "evaluation_finality": "FINALIZED",
+      "consensus": "MAJORITY_AGREE",
+      "execution": "SUCCESS",
+      "status": "INVALID_SOURCE",
+      "reason": "invalid source payload/price",
+      "source_digest": "ff77aaf150e3bfac85ebc425b95dd06b4595585982b44b0af790957f8d3dfad6",
+      "quoted_total_minor": 0,
+      "economic_effect": "NONE"
     }
   ],
   "duplicate_offer": {
@@ -211,6 +215,6 @@
   "limitations": [
     "Fixture documents are repository-controlled test evidence, not independent provider-market proof.",
     "Provider URL-prefix ratification is not cryptographic domain-ownership proof.",
-    "Source-unavailable evaluation remained COMMITTING and is pending/non-final."
+    "The repository-controlled missing-source fixture finalized as INVALID_SOURCE with no economic effect."
   ]
 }
